@@ -171,15 +171,60 @@ const ZODIAC_SIGNS = [
 
 // Planet Significance Data
 const PLANET_INFO = {
-  'Sun': { significance: 'Soul, vitality, father, authority, leadership, and self-expression.', icon: 'white-balance-sunny', color: '#F39C12' },
-  'Moon': { significance: 'Mind, emotions, mother, nurturing, intuition, and public relations.', icon: 'moon-waning-crescent', color: '#4A90E2' },
-  'Mars': { significance: 'Energy, courage, siblings, property, drive, and physical strength.', icon: 'sword-cross', color: '#E74C3C' },
-  'Mercury': { significance: 'Intelligence, communication, business, education, and analytical skills.', icon: 'forum', color: '#27AE60' },
-  'Jupiter': { significance: 'Wisdom, spirituality, children, wealth, luck, and higher learning.', icon: 'book-open-variant', color: '#F39C12' },
-  'Venus': { significance: 'Love, beauty, relationships, luxury, marriage, and material comforts.', icon: 'heart', color: '#E91E63' },
-  'Saturn': { significance: 'Discipline, karma, hard work, longevity, obstacles, and responsibilities.', icon: 'briefcase', color: '#2C3E50' },
-  'Rahu': { significance: 'Desires, foreign lands, innovation, materialism, and sudden gains.', icon: 'ghost', color: '#9C27B0' },
-  'Ketu': { significance: 'Spirituality, detachment, past life karma, liberation, and mysticism.', icon: 'eye-off', color: '#795548' }
+  'Sun': { 
+    significance: 'Shows ego, vitality, authority, and career direction. Represents father, government, leadership, and willpower.',
+    coreIdea: 'Soul, self-expression, life purpose, and power',
+    icon: 'white-balance-sunny', 
+    color: '#F39C12' 
+  },
+  'Moon': { 
+    significance: 'Represents mind, emotions, habits, and nurturing. Governs mother, public relations, comfort, and intuition.',
+    coreIdea: 'Emotional nature, mental peace, and subconscious patterns',
+    icon: 'moon-waning-crescent', 
+    color: '#4A90E2' 
+  },
+  'Mars': { 
+    significance: 'Energy, courage, aggression, drive, and physical strength. Governs siblings, property, passion, and competitive spirit.',
+    coreIdea: 'Action, willpower, courage, and conflict',
+    icon: 'sword-cross', 
+    color: '#E74C3C' 
+  },
+  'Mercury': { 
+    significance: 'Intelligence, communication, business, education, and analytical skills. Governs speech, writing, and logical thinking.',
+    coreIdea: 'Intellect, reasoning, commerce, and adaptability',
+    icon: 'forum', 
+    color: '#27AE60' 
+  },
+  'Jupiter': { 
+    significance: 'Wisdom, spirituality, children, wealth, and expansion. Represents teaching, luck, growth, and higher learning.',
+    coreIdea: 'Knowledge, faith, prosperity, and blessings',
+    icon: 'book-open-variant', 
+    color: '#F39C12' 
+  },
+  'Venus': { 
+    significance: 'Love, beauty, art, relationships, luxury, and marriage. Governs pleasure, material comforts, and aesthetic sense.',
+    coreIdea: 'Desire, harmony, creativity, and partnerships',
+    icon: 'heart', 
+    color: '#E91E63' 
+  },
+  'Saturn': { 
+    significance: 'Discipline, karma, delays, hard work, longevity, and obstacles. Represents responsibilities, justice, and life lessons.',
+    coreIdea: 'Structure, limitation, perseverance, and maturity',
+    icon: 'briefcase', 
+    color: '#2C3E50' 
+  },
+  'Rahu': { 
+    significance: 'Desires, obsessions, foreign lands, innovation, and materialism. Creates sudden gains, illusions, and unconventional paths.',
+    coreIdea: 'Ambition, worldly attachments, and karmic desires',
+    icon: 'ghost', 
+    color: '#9C27B0' 
+  },
+  'Ketu': { 
+    significance: 'Spirituality, detachment, past life karma, liberation, and mysticism. Brings unexpected events and inner wisdom.',
+    coreIdea: 'Moksha, renunciation, intuition, and spiritual growth',
+    icon: 'eye-off', 
+    color: '#795548' 
+  }
 };
 
 export default function KundliViewScreen({ navigation, route }) {
@@ -548,9 +593,16 @@ export default function KundliViewScreen({ navigation, route }) {
                         </Button>
                         {isExpanded && (
                           <View style={styles.planetExpanded}>
-                            <Text style={styles.planetSignificance}>📌 {info.significance}</Text>
+                            <View style={styles.planetExpandedSection}>
+                              <Text style={styles.planetCoreIdea}>💡 Core idea: {info.coreIdea}</Text>
+                            </View>
+                            <View style={styles.planetExpandedSection}>
+                              <Text style={styles.planetSignificance}>📌 Significance: {info.significance}</Text>
+                            </View>
                             {planet.nakshatra !== 'N/A' && (
-                              <Text style={styles.planetNakshatra}>⭐ Nakshatra: {planet.nakshatra}</Text>
+                              <View style={styles.planetExpandedSection}>
+                                <Text style={styles.planetNakshatra}>⭐ Nakshatra: {planet.nakshatra}</Text>
+                              </View>
                             )}
                           </View>
                         )}
@@ -623,11 +675,22 @@ function DetailRow({ icon, label, value }) {
 }
 
 function SignChip({ icon, label, value, color }) {
+  // Get emoji symbol for the sign
+  const getSignEmoji = (signName) => {
+    const emojiMap = {
+      'Aries': '🐏', 'Taurus': '🐂', 'Gemini': '👫', 'Cancer': '🦀',
+      'Leo': '🦁', 'Virgo': '👰', 'Libra': '⚖️', 'Scorpio': '🦂',
+      'Sagittarius': '🏹', 'Capricorn': '🐐', 'Aquarius': '🏺', 'Pisces': '🐟',
+      'Ari': '🐏', 'Tau': '🐂', 'Gem': '👫', 'Can': '🦀',
+      'Leo': '🦁', 'Vir': '👰', 'Lib': '⚖️', 'Sco': '🦂',
+      'Sag': '🏹', 'Cap': '🐐', 'Aqu': '🏺', 'Pis': '🐟'
+    };
+    return emojiMap[signName] || emojiMap[signName?.substring(0, 3)] || '⭐';
+  };
+
   return (
     <View style={styles.signChip}>
-      <View style={[styles.signIcon, { backgroundColor: color }]}>
-        <MaterialCommunityIcons name={icon} size={24} color="#FFFFFF" />
-      </View>
+      <Text style={styles.signEmojiLarge}>{getSignEmoji(value)}</Text>
       <Text style={styles.signLabel}>{label}</Text>
       <Text style={styles.signValue}>{value}</Text>
     </View>
@@ -637,14 +700,14 @@ function SignChip({ icon, label, value, color }) {
 function RasiChart({ planets, houses }) {
   const houseNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   
-  // Zodiac sign symbols/logos
+  // Zodiac sign emoji symbols
   const SIGN_SYMBOLS = {
-    'Aries': '♈', 'Taurus': '♉', 'Gemini': '♊', 'Cancer': '♋',
-    'Leo': '♌', 'Virgo': '♍', 'Libra': '♎', 'Scorpio': '♏',
-    'Sagittarius': '♐', 'Capricorn': '♑', 'Aquarius': '♒', 'Pisces': '♓',
-    'Ari': '♈', 'Tau': '♉', 'Gem': '♊', 'Can': '♋',
-    'Leo': '♌', 'Vir': '♍', 'Lib': '♎', 'Sco': '♏',
-    'Sag': '♐', 'Cap': '♑', 'Aqu': '♒', 'Pis': '♓'
+    'Aries': '🐏', 'Taurus': '🐂', 'Gemini': '👫', 'Cancer': '🦀',
+    'Leo': '🦁', 'Virgo': '👰', 'Libra': '⚖️', 'Scorpio': '🦂',
+    'Sagittarius': '🏹', 'Capricorn': '🐐', 'Aquarius': '🏺', 'Pisces': '🐟',
+    'Ari': '🐏', 'Tau': '🐂', 'Gem': '👫', 'Can': '🦀',
+    'Leo': '🦁', 'Vir': '👰', 'Lib': '⚖️', 'Sco': '🦂',
+    'Sag': '🏹', 'Cap': '🐐', 'Aqu': '🏺', 'Pis': '🐟'
   };
   
   const planetsByHouse = {};
@@ -687,11 +750,11 @@ function RasiChart({ planets, houses }) {
               {houseNum}
             </SvgText>
             
-            {/* Zodiac symbol - large, centered top */}
+            {/* Zodiac emoji - large, centered top */}
             <SvgText 
               x={x + cellSize / 2} 
               y={y + 35} 
-              fontSize="28" 
+              fontSize="24" 
               fill="#6C3FB5" 
               textAnchor="middle"
               fontWeight="bold"
@@ -779,6 +842,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     marginBottom: 6
   },
+  signEmojiIcon: { fontSize: 22 },
+  signEmojiLarge: { fontSize: 48, marginBottom: 8 },
   signLabel: { 
     fontSize: 10, 
     color: '#7F8C8D', 
@@ -814,7 +879,9 @@ const styles = StyleSheet.create({
   planetDetails: { fontSize: 13, color: '#7F8C8D' },
   planetDegree: { fontSize: 14, fontWeight: '600', color: '#6C3FB5' },
   planetExpanded: { paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#F8F9FA', borderRadius: 8, marginTop: 8, marginBottom: 8 },
-  planetSignificance: { fontSize: 13, color: '#34495E', lineHeight: 19, marginBottom: 6 },
+  planetExpandedSection: { marginBottom: 8 },
+  planetCoreIdea: { fontSize: 13, color: '#6C3FB5', lineHeight: 19, fontWeight: '600', marginBottom: 6 },
+  planetSignificance: { fontSize: 13, color: '#34495E', lineHeight: 19 },
   planetNakshatra: { fontSize: 12, color: '#6C3FB5', fontStyle: 'italic' },
   planetDivider: { marginVertical: 4 },
   dashaContainer: { marginTop: 8 },
