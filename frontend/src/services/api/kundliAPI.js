@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../../constants/config';
 // Helper function to get auth token
 const getAuthToken = async () => {
   try {
-    const token = await AsyncStorage.getItem('@astroai_auth_token');  // ← FIX THIS
+    const token = await AsyncStorage.getItem('@astroai_auth_token');
     return token;
   } catch (error) {
     console.error('Error getting auth token:', error);
@@ -46,29 +46,29 @@ const apiCall = async (endpoint, options = {}) => {
 export const kundliAPI = {
   // Generate new Kundli
   generateKundli: async (birthData) => {
-    return apiCall('/kundli/generate', {
+    return apiCall('/api/kundli/generate', {
       method: 'POST',
       body: JSON.stringify(birthData),
     });
   },
 
   // Get user's Kundli
-  getKundli: async (userId) => {
-    return apiCall(`/kundli/${userId}`, {
+  getKundli: async (kundliId) => {
+    return apiCall(`/api/kundli/${kundliId}`, {
       method: 'GET',
     });
   },
 
   // Get all Kundlis for user
-  getUserKundlis: async (userId) => {
-    return apiCall(`/kundli/user/${userId}`, {
+  getUserKundlis: async () => {
+    return apiCall(`/api/kundli`, {
       method: 'GET',
     });
   },
 
   // Update Kundli
   updateKundli: async (kundliId, updates) => {
-    return apiCall(`/kundli/${kundliId}`, {
+    return apiCall(`/api/kundli/${kundliId}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
     });
@@ -76,7 +76,7 @@ export const kundliAPI = {
 
   // Delete Kundli
   deleteKundli: async (kundliId) => {
-    return apiCall(`/kundli/${kundliId}`, {
+    return apiCall(`/api/kundli/${kundliId}`, {
       method: 'DELETE',
     });
   },
@@ -115,44 +115,45 @@ export const kundliAPI = {
 
   // Get planetary positions
   getPlanetaryPositions: async (kundliId) => {
-    return apiCall(`/kundli/${kundliId}/planets`, {
+    return apiCall(`/api/kundli/${kundliId}/planets`, {
       method: 'GET',
     });
   },
 
   // Get Dasha periods
   getDashaPeriods: async (kundliId) => {
-    return apiCall(`/kundli/${kundliId}/dasha`, {
+    return apiCall(`/api/kundli/${kundliId}/dasha`, {
       method: 'GET',
     });
   },
 
   // Get house positions
   getHousePositions: async (kundliId) => {
-    return apiCall(`/kundli/${kundliId}/houses`, {
+    return apiCall(`/api/kundli/${kundliId}/houses`, {
       method: 'GET',
     });
   },
 
   // Get divisional charts
   getDivisionalChart: async (kundliId, chartType) => {
-    return apiCall(`/kundli/${kundliId}/charts/${chartType}`, {
+    return apiCall(`/api/kundli/${kundliId}/divisional/${chartType}`, {
       method: 'GET',
     });
   },
 
   // Get compatibility analysis
   getCompatibility: async (kundliId1, kundliId2) => {
-    return apiCall(`/kundli/compatibility/${kundliId1}/${kundliId2}`, {
-      method: 'GET',
+    return apiCall(`/api/kundli/match`, {
+      method: 'POST',
+      body: JSON.stringify({ kundliId1, kundliId2 }),
     });
   },
 
-  // Validate birth data
-  validateBirthData: async (birthData) => {
-    return apiCall('/kundli/validate', {
+  // Verify location
+  verifyLocation: async (placeOfBirth) => {
+    return apiCall('/api/kundli/verify-location', {
       method: 'POST',
-      body: JSON.stringify(birthData),
+      body: JSON.stringify({ placeOfBirth }),
     });
   },
 };

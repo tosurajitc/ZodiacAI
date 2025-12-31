@@ -1,8 +1,8 @@
-Frontend: PS C:\@Personal\shuktoai\Astro_ai\astro-ai\frontend> npx expo start --clear
+Frontend: PS C:\@Personal\shuktoai\Astro_ai\astro-ai\frontend> npx expo start --clearw
 Backend: (venv) PS C:\@Personal\shuktoai\Astro_ai\astro-ai\backend\functions\files> node index.js
-C:\@Personal\shuktoai\Astro_ai\astro-ai\astrology-engine> py -m uvicorn api.main:app --reload --port 8000  
+C:\@Personal\shuktoai\Astro_ai\astro-ai\astrology-engine> py -m uvicorn api.main:app --reload --port 8000
 
-PostGRESQL PW:  'watsonx_secure_2024'
+PostGreSQL PW:  'watsonx_secure_2024'
          Name         |    Owner     | Encoding |      Collate       |       Ctype        | ICU Locale | Locale Provider |     Access privileges
 ----------------------+--------------+----------+--------------------+--------------------+------------+-----------------+---------------------------
  ai_services_platform | watsonx_user | UTF8     | English_India.1252 | English_India.1252 |            | libc            |

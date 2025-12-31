@@ -5,9 +5,9 @@ from typing import Dict, List, Optional
 from datetime import datetime
 import sys
 sys.path.append('..')
-from base_calculator import BaseCalculator
-from gemstone_suggestions import GemstoneSuggestions
-from mantra_suggestions import MantraSuggestions
+from calculations.base_calculator import BaseCalculator
+from .gemstone_suggestions import GemstoneSuggestions
+from .mantra_suggestions import MantraSuggestions
 
 class RemedyEngine(BaseCalculator):
     """

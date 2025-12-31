@@ -35,7 +35,7 @@ app.add_middleware(
 )
 
 # API Key Authentication Middleware
-API_KEY = os.getenv("PYTHON_ENGINE_API_KEY", "your-python-engine-api-key")
+API_KEY = os.getenv("PYTHON_ENGINE_API_KEY", "zodiacai-secret-key-2025")
 
 async def verify_api_key(x_api_key: str = Header(None)):
     """Verify API key from request header"""

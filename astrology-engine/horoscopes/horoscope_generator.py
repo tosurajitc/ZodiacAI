@@ -3,10 +3,11 @@
 
 from datetime import datetime
 from typing import Dict, Optional, Literal
-from daily_horoscope_generator import DailyHoroscopeGenerator
-from monthly_horoscope_generator import MonthlyHoroscopeGenerator
-from yearly_horoscope_generator import YearlyHoroscopeGenerator
-from lifetime_analysis_generator import LifetimeAnalysisGenerator
+from .daily_horoscope import DailyHoroscopeGenerator
+from .monthly_horoscope import MonthlyHoroscopeGenerator
+from .yearly_horoscope import YearlyHoroscopeGenerator
+from .lifetime_analysis import LifetimeAnalysisGenerator
+from typing import List, Dict, Optional
 
 class HoroscopeGenerator:
     """

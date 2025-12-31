@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../../constants/config';
 
 const getAuthToken = async () => {
   try {
-    const token = await AsyncStorage.getItem('authToken');
+    const token = await AsyncStorage.getItem('@astroai_auth_token');
     return token;
   } catch (error) {
     console.error('Error getting auth token:', error);
@@ -43,64 +43,70 @@ const apiCall = async (endpoint, options = {}) => {
 
 export const horoscopeAPI = {
   // Get daily horoscope
-  getDailyHoroscope: async (userId, date = null) => {
-    const endpoint = date 
-      ? `/horoscope/daily/${userId}?date=${date}`
-      : `/horoscope/daily/${userId}`;
-    return apiCall(endpoint, { method: 'GET' });
+  getDailyHoroscope: async () => {
+    return apiCall('/api/horoscope/daily', { method: 'GET' });
+  },
+
+  // Get weekly horoscope
+  getWeeklyHoroscope: async () => {
+    return apiCall('/api/horoscope/weekly', { method: 'GET' });
   },
 
   // Get monthly horoscope
-  getMonthlyHoroscope: async (userId, year = null, month = null) => {
-    let endpoint = `/horoscope/monthly/${userId}`;
-    if (year && month) {
-      endpoint += `?year=${year}&month=${month}`;
-    }
-    return apiCall(endpoint, { method: 'GET' });
+  getMonthlyHoroscope: async () => {
+    return apiCall('/api/horoscope/monthly', { method: 'GET' });
   },
 
   // Get yearly horoscope
-  getYearlyHoroscope: async (userId, year = null) => {
-    const endpoint = year
-      ? `/horoscope/yearly/${userId}?year=${year}`
-      : `/horoscope/yearly/${userId}`;
-    return apiCall(endpoint, { method: 'GET' });
+  getYearlyHoroscope: async () => {
+    return apiCall('/api/horoscope/yearly', { method: 'GET' });
   },
 
   // Get lifetime analysis
-  getLifetimeAnalysis: async (userId) => {
-    return apiCall(`/horoscope/lifetime/${userId}`, {
-      method: 'GET',
-    });
+  getLifetimeAnalysis: async () => {
+    return apiCall('/api/horoscope/lifetime', { method: 'GET' });
   },
 
   // Get remedies
-  getRemedies: async (userId, category = null) => {
-    const endpoint = category
-      ? `/horoscope/remedies/${userId}?category=${category}`
-      : `/horoscope/remedies/${userId}`;
-    return apiCall(endpoint, { method: 'GET' });
+  getRemedies: async () => {
+    return apiCall('/api/horoscope/remedies', { method: 'GET' });
   },
 
   // Get current transits
-  getCurrentTransits: async (userId) => {
-    return apiCall(`/horoscope/transits/${userId}`, {
-      method: 'GET',
-    });
+  getCurrentTransits: async () => {
+    return apiCall('/api/horoscope/transits', { method: 'GET' });
   },
 
-  // Get predictions for specific area
-  getPredictionByArea: async (userId, area) => {
-    return apiCall(`/horoscope/prediction/${userId}/${area}`, {
-      method: 'GET',
-    });
+  // Get current dasha
+  getCurrentDasha: async () => {
+    return apiCall('/api/horoscope/dasha', { method: 'GET' });
   },
 
-  // Generate horoscope (force regenerate)
-  generateHoroscope: async (userId, type, params = {}) => {
-    return apiCall('/horoscope/generate', {
+  // Get career predictions
+  getCareerPredictions: async () => {
+    return apiCall('/api/horoscope/career', { method: 'GET' });
+  },
+
+  // Get relationship predictions
+  getRelationshipPredictions: async () => {
+    return apiCall('/api/horoscope/relationships', { method: 'GET' });
+  },
+
+  // Get health predictions
+  getHealthPredictions: async () => {
+    return apiCall('/api/horoscope/health', { method: 'GET' });
+  },
+
+  // Get finance predictions
+  getFinancePredictions: async () => {
+    return apiCall('/api/horoscope/finance', { method: 'GET' });
+  },
+
+  // Generate custom horoscope
+  generateHoroscope: async (type, params = {}) => {
+    return apiCall('/api/horoscope/generate', {
       method: 'POST',
-      body: JSON.stringify({ userId, type, ...params }),
+      body: JSON.stringify({ type, ...params }),
     });
   },
 };

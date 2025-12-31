@@ -381,7 +381,7 @@ class KundliCalculator:
 if __name__ == "__main__":
     # Example: Calculate Kundli
     calculator = KundliCalculator(ayanamsa='Lahiri')
-    
+
     birth_date = datetime(1990, 5, 15, 14, 30)  # May 15, 1990, 2:30 PM
     latitude = 28.6139  # Delhi
     longitude = 77.2090

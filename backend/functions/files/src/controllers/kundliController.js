@@ -20,173 +20,70 @@ const { BirthDetails } = require('../models');
  * @route   POST /api/kundli/generate
  * @access  Private
  */
+
+// Replace the generateKundli function in kundliController.js
+// Location: backend/functions/files/src/controllers/kundliController.js
+// Replace lines 23-239 with this:
+
 const generateKundli = asyncHandler(async (req, res) => {
-  console.log('=== INCOMING REQUEST ===');
-  console.log('Body:', JSON.stringify(req.body, null, 2));
   const { name, dateOfBirth, timeOfBirth, placeOfBirth, latitude, longitude, timezone } = req.body;
   const userId = req.user.id;
 
-  // Mock kundli data (TEMPORARY - will be replaced with Python engine data)
-  const kundliData = {
-    chart: {
-      rasi: {
-        houses: [
-          { house: 1, sign: 'Gemini', planets: ['Mercury', 'Venus'] },
-          { house: 2, sign: 'Cancer', planets: [] },
-          { house: 3, sign: 'Leo', planets: ['Sun'] },
-          { house: 4, sign: 'Virgo', planets: [] },
-          { house: 5, sign: 'Libra', planets: ['Mars'] },
-          { house: 6, sign: 'Scorpio', planets: ['Ketu'] },
-          { house: 7, sign: 'Sagittarius', planets: [] },
-          { house: 8, sign: 'Capricorn', planets: ['Saturn'] },
-          { house: 9, sign: 'Aquarius', planets: [] },
-          { house: 10, sign: 'Pisces', planets: ['Jupiter'] },
-          { house: 11, sign: 'Aries', planets: [] },
-          { house: 12, sign: 'Taurus', planets: ['Moon', 'Rahu'] },
-        ],
-      },
-      navamsa: {
-        houses: [
-          { house: 1, sign: 'Leo', planets: ['Sun'] },
-        ],
-      },
-    },
-    birthDetails: {
-      name,
-      dateOfBirth,
-      timeOfBirth,
-      placeOfBirth,
-      latitude,
-      longitude,
-      timezone,
-    },
-    planets: [
-      {
-        name: 'Sun',
-        sign: 'Leo',
-        degree: '15°30\'',
-        house: 3,
-        retrograde: false,
-        nakshatra: 'Magha',
-        nakshatraPada: 2,
-      },
-      {
-        name: 'Moon',
-        sign: 'Taurus',
-        degree: '23°12\'',
-        house: 12,
-        retrograde: false,
-        nakshatra: 'Mrigashira',
-        nakshatraPada: 1,
-      },
-      {
-        name: 'Mars',
-        sign: 'Libra',
-        degree: '8°42\'',
-        house: 5,
-        retrograde: false,
-        nakshatra: 'Chitra',
-        nakshatraPada: 3,
-      },
-      {
-        name: 'Mercury',
-        sign: 'Gemini',
-        degree: '12°24\'',
-        house: 1,
-        retrograde: false,
-        nakshatra: 'Ardra',
-        nakshatraPada: 1,
-      },
-      {
-        name: 'Jupiter',
-        sign: 'Pisces',
-        degree: '28°54\'',
-        house: 10,
-        retrograde: false,
-        nakshatra: 'Revati',
-        nakshatraPada: 4,
-      },
-      {
-        name: 'Venus',
-        sign: 'Gemini',
-        degree: '19°18\'',
-        house: 1,
-        retrograde: false,
-        nakshatra: 'Punarvasu',
-        nakshatraPada: 2,
-      },
-      {
-        name: 'Saturn',
-        sign: 'Capricorn',
-        degree: '7°6\'',
-        house: 8,
-        retrograde: true,
-        nakshatra: 'Uttara Ashadha',
-        nakshatraPada: 2,
-      },
-      {
-        name: 'Rahu',
-        sign: 'Taurus',
-        degree: '25°36\'',
-        house: 12,
-        retrograde: true,
-        nakshatra: 'Mrigashira',
-        nakshatraPada: 2,
-      },
-      {
-        name: 'Ketu',
-        sign: 'Scorpio',
-        degree: '25°36\'',
-        house: 6,
-        retrograde: true,
-        nakshatra: 'Jyeshtha',
-        nakshatraPada: 2,
-      },
-    ],
-    houses: [
-      { house: 1, cusp: 'Gemini 15°30\'', lord: 'Mercury' },
-      { house: 2, cusp: 'Cancer 12°45\'', lord: 'Moon' },
-      { house: 3, cusp: 'Leo 10°20\'', lord: 'Sun' },
-      { house: 4, cusp: 'Virgo 8°15\'', lord: 'Mercury' },
-      { house: 5, cusp: 'Libra 7°30\'', lord: 'Venus' },
-      { house: 6, cusp: 'Scorpio 9°00\'', lord: 'Mars' },
-      { house: 7, cusp: 'Sagittarius 15°30\'', lord: 'Jupiter' },
-      { house: 8, cusp: 'Capricorn 12°45\'', lord: 'Saturn' },
-      { house: 9, cusp: 'Aquarius 10°20\'', lord: 'Saturn' },
-      { house: 10, cusp: 'Pisces 8°15\'', lord: 'Jupiter' },
-      { house: 11, cusp: 'Aries 7°30\'', lord: 'Mars' },
-      { house: 12, cusp: 'Taurus 9°00\'', lord: 'Venus' },
-    ],
-    dashas: {
-      currentDasha: {
-        mahadasha: 'Venus',
-        antardasha: 'Moon',
-        pratyantardasha: 'Mars',
-        startDate: '2024-12-01',
-        endDate: '2025-02-15',
-      },
-    },
-  };
+  logger.info('Generating comprehensive kundli', { userId, name });
 
-  // Create kundli object with unique ID
-  const kundliId = uuidv4();
-  const kundli = {
-    id: kundliId,
-    userId,
-    ...kundliData,
-    createdAt: new Date(),
-  };
-
-  logger.info('Kundli generated', { userId, kundliId });
-
-  // Save to database
   try {
-    console.log('=== ATTEMPTING DATABASE INSERT ===');
-    console.log('Data:', { id: kundliId, user_id: userId, name: name });
+      // Geocode location if coordinates not provided
+      let finalLat = latitude;
+      let finalLon = longitude;
+      
+      if (!latitude || !longitude) {
+        const geoResponse = await axios.get(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeOfBirth)}`,
+          {
+            headers: {
+              'User-Agent': 'AstroAI/1.0 (astrology-app)'
+            }
+          }
+        );
+        
+        if (geoResponse.data && geoResponse.data.length > 0) {
+          finalLat = parseFloat(geoResponse.data[0].lat);
+          finalLon = parseFloat(geoResponse.data[0].lon);
+        } else {
+          return errorResponse(res, 'Unable to find location coordinates', 400);
+        }
+      }
 
+      // Call Python engine
+      const pythonApiUrl = process.env.PYTHON_ENGINE_URL || 'http://localhost:8000';
+      const apiKey = process.env.PYTHON_ENGINE_API_KEY || 'your-python-engine-api-key';
+
+      const response = await axios.post(
+        `${pythonApiUrl}/api/kundli/comprehensive`,
+        null,
+        {
+          params: {
+            birth_date: typeof dateOfBirth === 'string' ? dateOfBirth.split('T')[0] : dateOfBirth.toISOString().split('T')[0],
+            birth_time: timeOfBirth.substring(0, 5),
+            latitude: finalLat,
+            longitude: finalLon,
+            timezone: timezone || 5.5,
+            name: name,
+            place: placeOfBirth
+          },
+          headers: {
+            'X-API-Key': apiKey
+          }
+        }
+      );
+
+    const kundliData = response.data.data;
+
+    // Create kundli ID
+    const kundliId = uuidv4();
+
+    // Ensure user exists
     const { User } = require('../models');
-
-    // Ensure user exists in database
     await User.findOrCreate({
       where: { id: userId },
       defaults: {
@@ -196,7 +93,7 @@ const generateKundli = asyncHandler(async (req, res) => {
       }
     });
 
-
+    // Save to database
     await BirthDetails.create({
       id: kundliId,
       user_id: userId,
@@ -206,36 +103,48 @@ const generateKundli = asyncHandler(async (req, res) => {
       birth_location: placeOfBirth,
       latitude: latitude,
       longitude: longitude,
-      timezone: timezone,
-      rasi_chart: JSON.stringify(kundliData.chart.rasi),
-      navamsa_chart: JSON.stringify(kundliData.chart.navamsa),
-      planetary_positions: JSON.stringify(kundliData.planets),
-      house_cusps: JSON.stringify(kundliData.houses),
-      current_dasha: JSON.stringify(kundliData.dashas.currentDasha),
+      timezone: timezone || 5.5,
+      rasi_chart: kundliData.shodashvarga_table,
+      navamsa_chart: kundliData.shodashvarga_table,
+      planetary_positions: kundliData.planetary_positions,
+      house_cusps: kundliData.house_analysis,
+      current_dasha: kundliData.dasha.current,
+      vimshottari_dasha: kundliData.dasha.complete_timeline,
+      shodashvarga_table: kundliData.shodashvarga_table,
+      house_analysis: kundliData.house_analysis,
       chart_generated_at: new Date(),
     });
 
-    console.log('=== SUCCESS ===');
-  } catch (err) {
-    console.error('=== DATABASE ERROR ===');
-    console.error('Name:', err.name);
-    console.error('Message:', err.message);
-    console.error('Stack:', err.stack);
-    throw err;
+    logger.info('Comprehensive kundli saved', { userId, kundliId });
+
+    return kundliResponse(res, 'Comprehensive kundli generated successfully', {
+      id: kundliId,
+      kundli: kundliData.shodashvarga_table,
+      birthDetails: {
+        name: name,
+        dateOfBirth: typeof dateOfBirth === 'string' ? dateOfBirth.split('T')[0] : dateOfBirth.toISOString().split('T')[0],
+        timeOfBirth: timeOfBirth,
+        placeOfBirth: placeOfBirth
+      },
+      planetaryPositions: kundliData.planetary_positions,
+      houses: kundliData.house_analysis,
+      dashas: kundliData.dasha,
+      generatedAt: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('Kundli generation failed', { 
+      error: error.message,
+      userId,
+      pythonEngineError: error.response?.data 
+    });
+
+    if (error.response?.status === 401) {
+      return errorResponse(res, 'Python engine authentication failed', 500);
+    }
+
+    return errorResponse(res, 'Failed to generate kundli. Please try again.', 500);
   }
-
-  logger.info('Kundli saved to database', { userId, kundliId });
-
-  // Return response with ID included
-  return kundliResponse(res, 'Kundli generated successfully', {
-    id: kundliId,
-    kundli: kundliData.chart,
-    birthDetails: kundliData.birthDetails,
-    planetaryPositions: kundliData.planets,
-    houses: kundliData.houses,
-    dashas: kundliData.dashas,
-    generatedAt: kundli.createdAt.toISOString()
-  });
 });
 
 /**
@@ -531,43 +440,27 @@ const getKundliSummary = asyncHandler(async (req, res) => {
  * @route   GET /api/kundli/:id/pdf
  * @access  Private
  */
+// Update downloadKundliPDF function in kundliController.js
+// Location: backend/functions/files/src/controllers/kundliController.js
+// REPLACE lines 534-636 with this:
+
 const downloadKundliPDF = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
 
-  logger.info('PDF download requested', { 
-    service: 'astroai-backend',
-    userId, 
-    kundliId: id 
-  });
+  logger.info('PDF download requested', { userId, kundliId: id });
 
   try {
-    // Fetch actual kundli from database
     const birthDetails = await BirthDetails.findOne({
-      where: { 
-        id: id,
-        user_id: userId
-      }
+      where: { id: id, user_id: userId }
     });
 
     if (!birthDetails) {
-      logger.warn('Kundli not found', { userId, kundliId: id });
       return res.status(404).json({
         success: false,
-        message: 'Kundli not found or unauthorized'
+        message: 'Kundli not found'
       });
     }
-
-    logger.info('Kundli fetched from DB', { 
-      kundliId: id, 
-      name: birthDetails.name,
-      place: birthDetails.birth_location 
-    });
-
-    // Parse chart data from database
-    const rasiChart = birthDetails.rasi_chart ? JSON.parse(birthDetails.rasi_chart) : { houses: [] };
-    const planets = birthDetails.planetary_positions ? JSON.parse(birthDetails.planetary_positions) : [];
-    const houses = birthDetails.house_cusps ? JSON.parse(birthDetails.house_cusps) : [];
 
     const kundliData = {
       birthDetails: {
@@ -575,62 +468,38 @@ const downloadKundliPDF = asyncHandler(async (req, res) => {
         dateOfBirth: birthDetails.birth_date,
         timeOfBirth: birthDetails.birth_time,
         placeOfBirth: birthDetails.birth_location,
-        latitude: birthDetails.latitude,
-        longitude: birthDetails.longitude,
-        timezone: birthDetails.timezone
       },
       chartData: {
-        planets: planets,
-        houses: houses,
-        rasi: rasiChart
+        planets: birthDetails.planetary_positions || [],
+        houses: birthDetails.house_cusps || []
+      },
+      shodashvarga: birthDetails.shodashvarga_table || null,
+      houseAnalysis: birthDetails.house_analysis || null,
+      dasha: {
+        current: birthDetails.current_dasha || null,
+        complete_timeline: birthDetails.vimshottari_dasha || null
       }
     };
 
-    // Import pdfService
     const pdfService = require('../services/pdfService');
+    const pdfBuffer = await pdfService.generateKundliPDF(kundliData);
 
-    // Generate PDF
-    logger.info('Generating PDF with real data', { 
-      service: 'astroai-backend',
-      kundliId: id,
-      userName: kundliData.birthDetails.name
-    });
-
-    const pdfBuffer = await pdfService.generateKundliPDF({
-      birthDetails: kundliData.birthDetails,
-      chartData: kundliData.chartData,
-      userName: kundliData.birthDetails.name
-    });
-
-    // Set response headers for file download
-    const filename = `Kundli_${kundliData.birthDetails.name}_${new Date().toISOString().split('T')[0]}.pdf`;
+    const filename = `Kundli_${birthDetails.name}_${new Date().toISOString().split('T')[0]}.pdf`;
     
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.setHeader('Content-Length', pdfBuffer.length);
 
-    logger.info('PDF generated successfully', {
-      service: 'astroai-backend',
-      kundliId: id,
-      fileSize: pdfBuffer.length,
-      filename: filename
-    });
+    logger.info('Comprehensive PDF generated', { kundliId: id, fileSize: pdfBuffer.length });
 
     return res.send(pdfBuffer);
 
   } catch (error) {
-    logger.error('PDF generation failed', {
-      service: 'astroai-backend',
-      error: error.message,
-      stack: error.stack,
-      kundliId: id
-    });
+    logger.error('PDF generation failed', { error: error.message, kundliId: id });
     
-    // Return error response
     return res.status(500).json({
       success: false,
-      message: 'Failed to generate PDF. Please try again.',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Failed to generate PDF'
     });
   }
 });

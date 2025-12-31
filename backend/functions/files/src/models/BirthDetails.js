@@ -51,11 +51,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     latitude: {
       type: DataTypes.DECIMAL(10, 7),
-      allowNull: false,
+      allowNull: true,
     },
     longitude: {
       type: DataTypes.DECIMAL(10, 7),
-      allowNull: false,
+      allowNull: true,
     },
     timezone: {
       type: DataTypes.STRING(50),
@@ -92,6 +92,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSONB,
       allowNull: true,
       comment: 'Complete 120-year Vimshottari Dasha timeline',
+    },
+
+    // NEW: Comprehensive Kundli Fields
+    shodashvarga_table: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      comment: 'All 16 divisional chart positions for each planet (D1-D60)',
+    },
+    house_analysis: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      comment: 'Analysis of all 12 houses with lords and placements',
+    },
+    dasha_predictions: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      comment: 'Basic dasha predictions (free tier)',
+    },
+    dasha_interpretations: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      comment: 'AI-generated dasha interpretations (paid tier)',
     },
     // Special calculations
     ascendant: {

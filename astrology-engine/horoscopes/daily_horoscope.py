@@ -3,7 +3,7 @@
 
 from datetime import datetime, timedelta
 from typing import Dict, Optional
-from base_calculator import BaseCalculator
+from calculations.base_calculator import BaseCalculator
 import calendar
 
 class DailyHoroscopeGenerator(BaseCalculator):

@@ -85,10 +85,10 @@ const birthDetailsSchema = Joi.object({
       'any.required': 'Date of birth is required',
     }),
   timeOfBirth: Joi.string()
-    .pattern(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+    .pattern(/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/)
     .required()
     .messages({
-      'string.pattern.base': 'Time must be in HH:MM format (24-hour)',
+      'string.pattern.base': 'Time must be in HH:MM or HH:MM:SS format (24-hour)',
       'any.required': 'Time of birth is required',
     }),
   placeOfBirth: Joi.string()
@@ -101,28 +101,24 @@ const birthDetailsSchema = Joi.object({
       'any.required': 'Place of birth is required',
     }),
   latitude: Joi.number()
-    .min(-90)
-    .max(90)
-    .required()
-    .messages({
-      'number.min': 'Latitude must be between -90 and 90',
-      'number.max': 'Latitude must be between -90 and 90',
-      'any.required': 'Latitude is required',
-    }),
-  longitude: Joi.number()
-    .min(-180)
-    .max(180)
-    .required()
-    .messages({
-      'number.min': 'Longitude must be between -180 and 180',
-      'number.max': 'Longitude must be between -180 and 180',
-      'any.required': 'Longitude is required',
-    }),
-  timezone: Joi.string()
-    .required()
-    .messages({
-      'any.required': 'Timezone is required',
-    }),
+      .min(-90)
+      .max(90)
+      .optional()
+      .messages({
+        'number.min': 'Latitude must be between -90 and 90',
+        'number.max': 'Latitude must be between -90 and 90',
+      }),
+    longitude: Joi.number()
+      .min(-180)
+      .max(180)
+      .optional()
+      .messages({
+        'number.min': 'Longitude must be between -180 and 180',
+        'number.max': 'Longitude must be between -180 and 180',
+      }),
+    timezone: Joi.string()
+      .optional()
+      .messages({}),
 });
 
 /**

@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Dimensions, Alert } from 'react-native';
 import { Text, Card, Chip, Divider, Button } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Svg, { Circle, Line, Text as SvgText, G } from 'react-native-svg';
+import Svg, { Line, Text as SvgText, G } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { kundliAPI } from '../../services/api/kundliAPI';
 import Loading from '../../components/common/Loading';
-import * as FileSystem from 'expo-file-system';    
-import * as Sharing from 'expo-sharing';    
-
 
 const { width } = Dimensions.get('window');
 const CHART_SIZE = width - 80;
@@ -18,7 +14,6 @@ export default function KundliViewScreen({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userName, setUserName] = useState('');
-
 
   useEffect(() => {
     loadUserName();
@@ -42,15 +37,13 @@ export default function KundliViewScreen({ navigation, route }) {
       setLoading(true);
       setError(null);
 
-      // ✅ FIRST: Check if data was passed via navigation params
       if (route.params?.kundliData) {
         console.log('Using kundli data from navigation params');
         setKundliData(route.params.kundliData);
         setLoading(false);
-        return; // ← EXIT HERE - Don't call API
+        return;
       }
 
-      // ✅ SECOND: Only reach here if NO data was passed
       const userDataString = await AsyncStorage.getItem('@astroai_user_data');
       if (!userDataString) {
         setError('User not logged in');
@@ -68,47 +61,63 @@ export default function KundliViewScreen({ navigation, route }) {
     }
   };
 
+  // Extract planetary positions from backend structure
+  const getPlanetaryPositions = () => {
+    if (!kundliData?.planetaryPositions) return [];
+    
+    const planets = [];
+    Object.entries(kundliData.planetaryPositions).forEach(([planetName, planetData]) => {
+      if (planetData && typeof planetData === 'object') {
+        planets.push({
+          name: planetName,
+          sign: planetData.sign || 'N/A',
+          degree: planetData.degree ? `${planetData.degree.toFixed(2)}°` : 'N/A',
+          house: planetData.house || 'N/A',
+          nakshatra: planetData.nakshatra?.formatted || planetData.nakshatra?.nakshatra || 'N/A',
+          retrograde: planetData.retrograde || false
+        });
+      }
+    });
+    return planets;
+  };
 
+  // Extract Sun sign
+  const getSunSign = () => {
+    if (!kundliData?.kundli?.Sun?.D1) return 'N/A';
+    return kundliData.kundli.Sun.D1.sign || 'N/A';
+  };
 
-// ABSOLUTELY FINAL VERSION - Copy this EXACTLY
-// Replace handleDownloadPDF in KundliViewScreen.js
+  // Extract Moon sign
+  const getMoonSign = () => {
+    if (!kundliData?.kundli?.Moon?.D1) return 'N/A';
+    return kundliData.kundli.Moon.D1.sign || 'N/A';
+  };
+
+  // Extract Ascendant from houses
+  const getAscendant = () => {
+    if (!kundliData?.houses || !Array.isArray(kundliData.houses)) return 'N/A';
+    const firstHouse = kundliData.houses.find(h => h.house === 1);
+    return firstHouse?.sign || 'N/A';
+  };
 
   const handleDownloadPDF = async () => {
-    console.log('🔥 Step 1: Download button clicked');
+    console.log('🔥 PDF Download initiated');
     
-    if (!kundliData) {
-      console.log('❌ No kundli data');
+    if (!kundliData?.id) {
       Alert.alert('Error', 'No Kundli data available');
       return;
     }
 
     try {
-      const kundliId = kundliData.id;
-      console.log('📋 Step 2: Kundli ID:', kundliId);
-      
-      if (!kundliId) {
-        Alert.alert('Error', 'Kundli ID not found');
-        return;
-      }
-
-      // Get token from localStorage
       const token = localStorage.getItem('@astroai_auth_token');
-      console.log('🔑 Step 3: Token found:', !!token);
-      console.log('🔑 Token preview:', token ? token.substring(0, 20) + '...' : 'NULL');
-      
       if (!token) {
         Alert.alert('Error', 'Please log in again');
         return;
       }
 
-      console.log('🚀 Step 4: Starting download...');
       const API_URL = 'http://localhost:5000';
-      const url = `${API_URL}/api/kundli/${kundliId}/pdf`;
-      
-      console.log('📡 Step 5: Fetching from:', url);
-      console.log('📡 Step 5b: Authorization header:', `Bearer ${token.substring(0, 20)}...`);
+      const url = `${API_URL}/api/kundli/${kundliData.id}/pdf`;
 
-      // Fetch PDF with auth
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -117,55 +126,32 @@ export default function KundliViewScreen({ navigation, route }) {
         },
       });
 
-      console.log('✅ Step 6: Response status:', response.status);
-
       if (response.status !== 200) {
-        const errorText = await response.text();
-        console.error('❌ Error response:', errorText);
         Alert.alert('Error', `Failed to download PDF (Status: ${response.status})`);
         return;
       }
 
-      console.log('📥 Step 7: Converting to blob...');
       const blob = await response.blob();
-      console.log('📦 Step 8: Blob size:', blob.size, 'bytes');
-
-      if (blob.size === 0) {
-        Alert.alert('Error', 'PDF is empty');
-        return;
-      }
-
-      console.log('💾 Step 9: Creating download link...');
-      
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
       link.download = `Kundli_${userName || 'User'}_${Date.now()}.pdf`;
       link.style.display = 'none';
-      
-      console.log('🔗 Step 10: Appending link to document...');
       document.body.appendChild(link);
-      
-      console.log('🖱️ Step 11: Clicking download link...');
       link.click();
       
-      console.log('🧹 Step 12: Cleaning up...');
       setTimeout(() => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(blobUrl);
-        console.log('✅ Step 13: Download complete!');
       }, 100);
       
       Alert.alert('Success', 'PDF downloaded successfully!');
       
     } catch (err) {
-      console.error('❌ DOWNLOAD ERROR:', err);
-      console.error('Error stack:', err.stack);
+      console.error('Download error:', err);
       Alert.alert('Error', `Download failed: ${err.message}`);
     }
   };
-
-
 
   const handleShare = () => {
     Alert.alert('Coming Soon', 'Share feature will be available soon!');
@@ -204,6 +190,11 @@ export default function KundliViewScreen({ navigation, route }) {
     );
   }
 
+  const planetaryPositions = getPlanetaryPositions();
+  const sunSign = getSunSign();
+  const moonSign = getMoonSign();
+  const ascendant = getAscendant();
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -232,14 +223,30 @@ export default function KundliViewScreen({ navigation, route }) {
           <Card.Content>
             <Text style={styles.cardTitle}>Birth Details</Text>
             <Divider style={styles.divider} />
-            <DetailRow icon="account" label="Name" value={userName || kundliData.birthDetails?.name || 'N/A'} />
-            <DetailRow icon="calendar" label="Date" value={kundliData.birthDetails?.dateOfBirth || 'N/A'} />
-            <DetailRow icon="clock-outline" label="Time" value={kundliData.birthDetails?.timeOfBirth || 'N/A'} />
-            <DetailRow icon="map-marker" label="Place" value={kundliData.birthDetails?.placeOfBirth || 'N/A'} />
+            <DetailRow 
+              icon="account" 
+              label="Name" 
+              value={kundliData.birthDetails?.name || userName || 'N/A'} 
+            />
+            <DetailRow 
+              icon="calendar" 
+              label="Date" 
+              value={kundliData.birthDetails?.dateOfBirth || 'N/A'} 
+            />
+            <DetailRow 
+              icon="clock-outline" 
+              label="Time" 
+              value={kundliData.birthDetails?.timeOfBirth || 'N/A'} 
+            />
+            <DetailRow 
+              icon="map-marker" 
+              label="Place" 
+              value={kundliData.birthDetails?.placeOfBirth || 'N/A'} 
+            />
           </Card.Content>
         </Card>
 
-        {/* Main Signs Card */}
+        {/* Primary Signs Card */}
         <Card style={styles.card}>
           <Card.Content>
             <Text style={styles.cardTitle}>Primary Signs</Text>
@@ -248,51 +255,56 @@ export default function KundliViewScreen({ navigation, route }) {
               <SignChip 
                 icon="white-balance-sunny" 
                 label="Sun Sign" 
-                value={kundliData.kundli?.sunSign || 'N/A'} 
+                value={sunSign} 
                 color="#F39C12" 
               />
               <SignChip 
                 icon="moon-waning-crescent" 
                 label="Moon Sign" 
-                value={kundliData.kundli?.moonSign || 'N/A'} 
+                value={moonSign} 
                 color="#4A90E2" 
               />
               <SignChip 
                 icon="arrow-up-circle" 
                 label="Ascendant" 
-                value={kundliData.kundli?.ascendant || 'N/A'} 
+                value={ascendant} 
                 color="#9B59B6" 
               />
             </View>
           </Card.Content>
         </Card>
 
-        {/* Rasi Chart (Simplified Version) */}
-        {kundliData.planetaryPositions && kundliData.planetaryPositions.length > 0 && (
+        {/* Rasi Chart */}
+        {planetaryPositions.length > 0 && (
           <Card style={styles.card}>
             <Card.Content>
               <Text style={styles.cardTitle}>Rasi Chart (D1)</Text>
               <Divider style={styles.divider} />
               <View style={styles.chartContainer}>
-                <RasiChart planets={kundliData.planetaryPositions} />
+                <RasiChart 
+                  planets={planetaryPositions}
+                  houses={kundliData.houses || []}
+                />
               </View>
               <Text style={styles.chartNote}>
-                ⓘ This is a simplified birth chart. Full interactive chart coming soon!
+                ⓘ Simplified birth chart showing planetary positions
               </Text>
             </Card.Content>
           </Card>
         )}
 
         {/* Planetary Positions */}
-        {kundliData.planetaryPositions && kundliData.planetaryPositions.length > 0 && (
+        {planetaryPositions.length > 0 && (
           <Card style={styles.card}>
             <Card.Content>
               <Text style={styles.cardTitle}>Planetary Positions</Text>
               <Divider style={styles.divider} />
-              {kundliData.planetaryPositions.map((planet, index) => (
-                <View key={index}>
+              {planetaryPositions.map((planet, index) => (
+                <View key={planet.name}>
                   <PlanetRow planet={planet} />
-                  {index < kundliData.planetaryPositions.length - 1 && <Divider style={styles.planetDivider} />}
+                  {index < planetaryPositions.length - 1 && (
+                    <Divider style={styles.planetDivider} />
+                  )}
                 </View>
               ))}
             </Card.Content>
@@ -300,7 +312,7 @@ export default function KundliViewScreen({ navigation, route }) {
         )}
 
         {/* Current Dasha */}
-        {kundliData.dashas && kundliData.dashas.currentDasha && (
+        {kundliData.dashas?.current && (
           <Card style={styles.card}>
             <Card.Content>
               <Text style={styles.cardTitle}>Current Dasha Period</Text>
@@ -309,20 +321,20 @@ export default function KundliViewScreen({ navigation, route }) {
                 <View style={styles.dashaRow}>
                   <Text style={styles.dashaLabel}>Mahadasha:</Text>
                   <Chip style={styles.dashaChip}>
-                    {kundliData.dashas.currentDasha.mahadasha || 'N/A'}
+                    {kundliData.dashas.current.mahadasha?.planet || 'N/A'}
                   </Chip>
                 </View>
                 <View style={styles.dashaRow}>
                   <Text style={styles.dashaLabel}>Antardasha:</Text>
                   <Chip style={styles.dashaChip}>
-                    {kundliData.dashas.currentDasha.antardasha || 'N/A'}
+                    {kundliData.dashas.current.antardasha?.planet || 'N/A'}
                   </Chip>
                 </View>
-                {kundliData.dashas.currentDasha.startDate && kundliData.dashas.currentDasha.endDate && (
+                {kundliData.dashas.current.mahadasha?.start_date && (
                   <View style={styles.dashaPeriod}>
                     <MaterialCommunityIcons name="calendar-range" size={16} color="#7F8C8D" />
                     <Text style={styles.dashaPeriodText}>
-                      {kundliData.dashas.currentDasha.startDate} - {kundliData.dashas.currentDasha.endDate}
+                      {kundliData.dashas.current.mahadasha.start_date} - {kundliData.dashas.current.mahadasha.end_date}
                     </Text>
                   </View>
                 )}
@@ -351,14 +363,13 @@ export default function KundliViewScreen({ navigation, route }) {
           </Button>
         </View>
 
-        {/* Bottom Padding */}
         <View style={styles.bottomPadding} />
       </ScrollView>
     </View>
   );
 }
 
-// Detail Row Component
+// Helper Components
 function DetailRow({ icon, label, value }) {
   return (
     <View style={styles.detailRow}>
@@ -371,7 +382,6 @@ function DetailRow({ icon, label, value }) {
   );
 }
 
-// Sign Chip Component
 function SignChip({ icon, label, value, color }) {
   return (
     <View style={styles.signChip}>
@@ -384,14 +394,13 @@ function SignChip({ icon, label, value, color }) {
   );
 }
 
-// Planet Row Component
 function PlanetRow({ planet }) {
   return (
     <View style={styles.planetRow}>
       <View style={styles.planetInfo}>
         <Text style={styles.planetName}>{planet.name}</Text>
         <Text style={styles.planetDetails}>
-          {planet.sign} • House {planet.house}
+          {planet.sign} • House {planet.house} • {planet.nakshatra}
         </Text>
       </View>
       <Text style={styles.planetDegree}>{planet.degree}</Text>
@@ -399,93 +408,57 @@ function PlanetRow({ planet }) {
   );
 }
 
-// Simplified Rasi Chart Component
-function RasiChart({ planets }) {
-  const houses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+function RasiChart({ planets, houses }) {
+  const houseNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const signs = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis'];
   
   // Group planets by house
   const planetsByHouse = {};
   planets.forEach(planet => {
-    if (!planetsByHouse[planet.house]) {
-      planetsByHouse[planet.house] = [];
+    const house = planet.house;
+    if (!planetsByHouse[house]) {
+      planetsByHouse[house] = [];
     }
-    planetsByHouse[planet.house].push(planet.name.substring(0, 2));
+    planetsByHouse[house].push(planet.name.substring(0, 3));
   });
 
   return (
     <Svg width={CHART_SIZE} height={CHART_SIZE}>
-      {/* Draw 12 house grid (3x4) */}
-      {houses.map((house, index) => {
+      {houseNumbers.map((house, index) => {
         const row = Math.floor(index / 3);
         const col = index % 3;
         const cellSize = CHART_SIZE / 3;
         const x = col * cellSize;
         const y = row * cellSize;
 
+        // Get sign for this house
+        const houseData = houses.find(h => h.house === house);
+        const sign = houseData?.sign || signs[house - 1];
+
         return (
           <G key={house}>
-            {/* House border */}
-            <Line
-              x1={x}
-              y1={y}
-              x2={x + cellSize}
-              y2={y}
-              stroke="#E0E0E0"
-              strokeWidth="2"
-            />
-            <Line
-              x1={x + cellSize}
-              y1={y}
-              x2={x + cellSize}
-              y2={y + cellSize}
-              stroke="#E0E0E0"
-              strokeWidth="2"
-            />
-            <Line
-              x1={x + cellSize}
-              y1={y + cellSize}
-              x2={x}
-              y2={y + cellSize}
-              stroke="#E0E0E0"
-              strokeWidth="2"
-            />
-            <Line
-              x1={x}
-              y1={y + cellSize}
-              x2={x}
-              y2={y}
-              stroke="#E0E0E0"
-              strokeWidth="2"
-            />
+            {/* House borders */}
+            <Line x1={x} y1={y} x2={x + cellSize} y2={y} stroke="#E0E0E0" strokeWidth="2" />
+            <Line x1={x + cellSize} y1={y} x2={x + cellSize} y2={y + cellSize} stroke="#E0E0E0" strokeWidth="2" />
+            <Line x1={x + cellSize} y1={y + cellSize} x2={x} y2={y + cellSize} stroke="#E0E0E0" strokeWidth="2" />
+            <Line x1={x} y1={y + cellSize} x2={x} y2={y} stroke="#E0E0E0" strokeWidth="2" />
 
             {/* House number */}
-            <SvgText
-              x={x + 10}
-              y={y + 20}
-              fontSize="12"
-              fill="#7F8C8D"
-              fontWeight="bold"
-            >
+            <SvgText x={x + 10} y={y + 20} fontSize="12" fill="#7F8C8D" fontWeight="bold">
               {house}
             </SvgText>
 
             {/* Sign */}
-            <SvgText
-              x={x + cellSize - 30}
-              y={y + 20}
-              fontSize="11"
-              fill="#6C3FB5"
-            >
-              {signs[house - 1]}
+            <SvgText x={x + cellSize - 35} y={y + 20} fontSize="11" fill="#6C3FB5">
+              {sign}
             </SvgText>
 
-            {/* Planets in this house */}
+            {/* Planets */}
             {planetsByHouse[house] && (
               <SvgText
                 x={x + cellSize / 2}
                 y={y + cellSize / 2 + 5}
-                fontSize="14"
+                fontSize="13"
                 fill="#2C3E50"
                 fontWeight="bold"
                 textAnchor="middle"
@@ -501,10 +474,7 @@ function RasiChart({ planets }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -516,177 +486,40 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
-  backButton: {
-    padding: 4,
-  },
-  downloadButton: {
-    padding: 4,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#7F8C8D',
-    textAlign: 'center',
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  generateButton: {
-    borderRadius: 8,
-    paddingHorizontal: 24,
-  },
-  card: {
-    marginTop: 16,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    marginBottom: 12,
-  },
-  divider: {
-    marginBottom: 16,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  detailLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  detailLabelText: {
-    fontSize: 14,
-    color: '#7F8C8D',
-    marginLeft: 8,
-  },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2C3E50',
-  },
-  signsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  signChip: {
-    flex: 1,
-    alignItems: 'center',
-    marginHorizontal: 4,
-  },
-  signIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  signLabel: {
-    fontSize: 11,
-    color: '#7F8C8D',
-    marginBottom: 4,
-  },
-  signValue: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-  },
-  chartContainer: {
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  chartNote: {
-    fontSize: 12,
-    color: '#7F8C8D',
-    textAlign: 'center',
-    marginTop: 12,
-    fontStyle: 'italic',
-  },
-  planetRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  planetInfo: {
-    flex: 1,
-  },
-  planetName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#2C3E50',
-    marginBottom: 2,
-  },
-  planetDetails: {
-    fontSize: 13,
-    color: '#7F8C8D',
-  },
-  planetDegree: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6C3FB5',
-  },
-  planetDivider: {
-    marginVertical: 4,
-  },
-  dashaContainer: {
-    marginTop: 8,
-  },
-  dashaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  dashaLabel: {
-    fontSize: 14,
-    color: '#7F8C8D',
-  },
-  dashaChip: {
-    backgroundColor: '#E3F2FD',
-  },
-  dashaPeriod: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-    padding: 12,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-  },
-  dashaPeriodText: {
-    fontSize: 13,
-    color: '#2C3E50',
-    marginLeft: 8,
-  },
-  actionButtons: {
-    marginTop: 16,
-    gap: 12,
-  },
-  actionButton: {
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  bottomPadding: {
-    height: 40,
-  },
+  backButton: { padding: 4 },
+  downloadButton: { padding: 4 },
+  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#2C3E50' },
+  content: { flex: 1, paddingHorizontal: 20 },
+  errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40 },
+  errorText: { fontSize: 16, color: '#7F8C8D', textAlign: 'center', marginTop: 16, marginBottom: 24 },
+  generateButton: { borderRadius: 8, paddingHorizontal: 24 },
+  card: { marginTop: 16, borderRadius: 12, backgroundColor: '#FFFFFF', elevation: 2 },
+  cardTitle: { fontSize: 18, fontWeight: 'bold', color: '#2C3E50', marginBottom: 12 },
+  divider: { marginBottom: 16 },
+  detailRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  detailLabel: { flexDirection: 'row', alignItems: 'center' },
+  detailLabelText: { fontSize: 14, color: '#7F8C8D', marginLeft: 8 },
+  detailValue: { fontSize: 14, fontWeight: '600', color: '#2C3E50' },
+  signsContainer: { flexDirection: 'row', justifyContent: 'space-between' },
+  signChip: { flex: 1, alignItems: 'center', marginHorizontal: 4 },
+  signIcon: { width: 48, height: 48, borderRadius: 24, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
+  signLabel: { fontSize: 11, color: '#7F8C8D', marginBottom: 4 },
+  signValue: { fontSize: 14, fontWeight: 'bold', color: '#2C3E50' },
+  chartContainer: { alignItems: 'center', marginVertical: 16 },
+  chartNote: { fontSize: 12, color: '#7F8C8D', textAlign: 'center', marginTop: 12, fontStyle: 'italic' },
+  planetRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
+  planetInfo: { flex: 1 },
+  planetName: { fontSize: 15, fontWeight: '600', color: '#2C3E50', marginBottom: 2 },
+  planetDetails: { fontSize: 13, color: '#7F8C8D' },
+  planetDegree: { fontSize: 14, fontWeight: '600', color: '#6C3FB5' },
+  planetDivider: { marginVertical: 4 },
+  dashaContainer: { marginTop: 8 },
+  dashaRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  dashaLabel: { fontSize: 14, color: '#7F8C8D' },
+  dashaChip: { backgroundColor: '#E3F2FD' },
+  dashaPeriod: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 8, padding: 12, backgroundColor: '#F5F5F5', borderRadius: 8 },
+  dashaPeriodText: { fontSize: 13, color: '#2C3E50', marginLeft: 8 },
+  actionButtons: { marginTop: 16, gap: 12 },
+  actionButton: { borderRadius: 8, marginBottom: 8 },
+  bottomPadding: { height: 40 },
 });

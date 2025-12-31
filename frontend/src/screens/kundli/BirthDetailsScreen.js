@@ -105,11 +105,8 @@ export default function BirthDetailsScreen({ navigation }) {
       const birthData = {
         name,
         dateOfBirth: Platform.OS === 'web' ? webBirthDate : mobileBirthDate.toISOString().split('T')[0],
-        timeOfBirth: Platform.OS === 'web' ? webBirthTime : formatTime(mobileBirthTime),
-        placeOfBirth: birthPlace,
-        latitude: 0, // TODO: Get from geocoding API
-        longitude: 0, // TODO: Get from geocoding API
-        timezone: 'Asia/Kolkata'
+        timeOfBirth: Platform.OS === 'web' ? webBirthTime + ':00' : formatTime(mobileBirthTime) + ':00',
+        placeOfBirth: birthPlace
       };
 
       console.log('Sending birth details to backend:', birthData);
@@ -131,8 +128,12 @@ export default function BirthDetailsScreen({ navigation }) {
       });
 
       const data = await response.json();
+      console.log('📋 Backend response:', JSON.stringify(data, null, 2));
 
       if (!response.ok) {
+        if (data.error?.details) {
+          console.log('❌ Validation errors:', data.error.details);
+        }
         throw new Error(data.error?.message || 'Failed to generate Kundli');
       }
 

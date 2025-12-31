@@ -8,6 +8,7 @@ from .divisional_charts import DivisionalChartsCalculator
 from .house_analysis import HouseAnalyzer
 from .dasha_calculator import DashaCalculator
 from .planetary_positions import PlanetaryPositions
+from .kundli_calculator import KundliCalculator
 
 class ComprehensiveKundliGenerator:
     """
@@ -23,6 +24,7 @@ class ComprehensiveKundliGenerator:
     def __init__(self):
         """Initialize all calculators"""
         swe.set_sid_mode(swe.SIDM_LAHIRI)
+        self.kundli_calc = KundliCalculator()
         self.divisional_calc = DivisionalChartsCalculator()
         self.house_analyzer = HouseAnalyzer()
         self.dasha_calc = DashaCalculator()
@@ -30,11 +32,10 @@ class ComprehensiveKundliGenerator:
     
     def _get_julian_day(self, date_str: str, time_str: str, timezone: float) -> float:
         """Convert date/time to Julian Day"""
+        from datetime import datetime, timedelta
+        
         dt = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M")
-        utc_dt = dt.replace(
-            hour=dt.hour - int(timezone),
-            minute=dt.minute - int((timezone % 1) * 60)
-        )
+        utc_dt = dt - timedelta(hours=timezone)
         
         return swe.julday(
             utc_dt.year,
@@ -72,13 +73,20 @@ class ComprehensiveKundliGenerator:
         # Calculate Julian Day
         jd = self._get_julian_day(birth_date, birth_time, timezone)
         
-        # 1. Calculate basic planetary positions
-        planets = self.planet_calc.calculate_all_planets(jd, latitude, longitude)
+        # 1. Calculate basic kundli with planetary positions
+        from datetime import datetime
+        birth_dt = datetime.strptime(f"{birth_date} {birth_time}", "%Y-%m-%d %H:%M")
+        kundli_data = self.kundli_calc.generate_kundli(
+            birth_dt, latitude, longitude, timezone
+        )
+        planets = kundli_data['planets']
         
         # 2. Calculate Shodashvarga (16 divisional charts) for all planets
         shodashvarga = {}
-        for planet_name, planet_data in planets.items():
-            if planet_name in self.PLANETS:
+
+        for planet_name in self.PLANETS:
+            if planet_name in planets:
+                planet_data = planets[planet_name]
                 charts = self.divisional_calc.calculate_all_divisional_charts(
                     planet_data['longitude']
                 )
@@ -91,12 +99,14 @@ class ComprehensiveKundliGenerator:
         
         # 4. Calculate Vimshottari Dasha
         moon_longitude = planets['Moon']['longitude']
-        dasha_timeline = self.dasha_calc.calculate_vimshottari_dasha(
-            birth_date, birth_time, moon_longitude
+        from datetime import datetime
+        birth_datetime = datetime.strptime(f"{birth_date} {birth_time}", "%Y-%m-%d %H:%M")
+        dasha_timeline = self.dasha_calc.generate_complete_dasha_timeline(
+            moon_longitude, birth_datetime
         )
         
         # 5. Get current dasha
-        current_dasha = self.dasha_calc.get_current_dasha(dasha_timeline)
+        current_dasha = self.dasha_calc.get_current_dasha(moon_longitude, birth_datetime)
         
         # Compile comprehensive result
         return {

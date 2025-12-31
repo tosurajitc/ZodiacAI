@@ -84,6 +84,10 @@ async def generate_comprehensive_kundli(
         )
         return create_success_response(result)
     except Exception as e:
+        import traceback
+        print("="*50)
+        traceback.print_exc()
+        print("="*50)
         raise HTTPException(status_code=500, detail=str(e))
     
     

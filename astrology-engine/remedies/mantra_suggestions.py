@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 from datetime import datetime
 import sys
 sys.path.append('..')
-from base_calculator import BaseCalculator
+from calculations.base_calculator import BaseCalculator
 
 class MantraSuggestions(BaseCalculator):
     """
