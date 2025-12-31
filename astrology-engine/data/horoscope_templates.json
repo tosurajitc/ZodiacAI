@@ -1,0 +1,249 @@
+{
+  "template_version": "1.0",
+  "last_updated": "2025-01-01",
+  "description": "Horoscope prediction templates for AstroAI - Compatible with Horoscope.js database model",
+  
+  "prediction_templates": {
+    "daily": {
+      "career": {
+        "favorable": [
+          "Today brings excellent opportunities for professional advancement. Your hard work will be recognized by superiors. {planet} in {house} supports your ambitions.",
+          "A productive day at work awaits you. Your communication skills will shine, making it an ideal time for presentations or negotiations.",
+          "Professional collaborations will flourish today. Consider networking and building new connections in your field.",
+          "Your creative solutions will impress colleagues. Take initiative on projects that showcase your expertise.",
+          "Leadership opportunities may present themselves. Trust your instincts and take calculated risks."
+        ],
+        "moderate": [
+          "A steady day for career matters. Focus on completing pending tasks rather than starting new projects.",
+          "Patience is key today. Some delays in work projects are possible, but they'll resolve by week's end.",
+          "Routine work will keep you occupied. Use this time to organize and plan for upcoming initiatives.",
+          "Maintain professionalism in all interactions. Minor workplace tensions may arise but can be managed diplomatically."
+        ],
+        "challenging": [
+          "Exercise caution in professional decisions today. Avoid conflicts with authority figures.",
+          "Not an ideal day for major career moves. Focus on damage control and maintaining current positions.",
+          "Workplace politics may surface. Stay neutral and avoid getting involved in disputes.",
+          "Stress levels may be high. Delegate tasks where possible and don't overcommit yourself."
+        ]
+      },
+      "finance": {
+        "favorable": [
+          "Financial gains are indicated today. A pending payment may arrive or an investment could show positive returns.",
+          "Good day for financial planning. {planet} supports wise money decisions and long-term investments.",
+          "Unexpected monetary benefits possible through networking or professional contacts.",
+          "Your financial wisdom will be appreciated. Consider helping family members with money matters.",
+          "Favorable for signing contracts or finalizing deals. Read fine print carefully before committing."
+        ],
+        "moderate": [
+          "Maintain balanced spending today. Avoid impulse purchases but don't be overly restrictive either.",
+          "Financial status remains stable. Good time to review budgets and track expenses.",
+          "Small unexpected expenses may arise. Keep emergency funds accessible.",
+          "Neither significant gains nor losses expected. Focus on maintaining financial discipline."
+        ],
+        "challenging": [
+          "Exercise financial caution today. Postpone major purchases or investments.",
+          "Avoid lending money or making financial commitments. Risk of losses if not careful.",
+          "Hidden expenses may surface. Review all bills and statements for errors.",
+          "Not favorable for speculation or gambling. Stick to conservative financial approach."
+        ]
+      },
+      "relationship": {
+        "favorable": [
+          "Harmonious day for relationships. Express your feelings openly and spend quality time with loved ones.",
+          "Romance is highlighted. Single individuals may encounter interesting prospects through social activities.",
+          "Family bonds strengthen today. Plan a special meal or outing with relatives.",
+          "Your understanding nature will resolve any lingering conflicts. Communication flows smoothly.",
+          "Ideal day for important conversations about commitment or future plans with partner."
+        ],
+        "moderate": [
+          "Relationships remain stable. Minor misunderstandings possible but easily resolved through dialogue.",
+          "Busy schedule may limit quality time with loved ones. Make conscious effort to connect.",
+          "Balance personal needs with partner's expectations. Compromise leads to harmony.",
+          "Social obligations may demand attention. Manage time between work and personal life."
+        ],
+        "challenging": [
+          "Potential for disagreements with loved ones. Practice patience and avoid harsh words.",
+          "Misunderstandings may arise from poor communication. Think before speaking.",
+          "Not ideal for important relationship decisions. Postpone serious discussions if possible.",
+          "Past issues may resurface. Address them calmly rather than defensively."
+        ]
+      },
+      "health": {
+        "favorable": [
+          "High energy levels today. Excellent time to start a new fitness routine or healthy habit.",
+          "Your immunity is strong. Maintain current wellness practices for continued vitality.",
+          "Mental clarity and physical stamina are well-balanced. Good day for yoga or meditation.",
+          "Digestive system functions optimally. Experiment with nutritious new recipes.",
+          "Sleep quality improves. Establish a relaxing bedtime routine for long-term benefits."
+        ],
+        "moderate": [
+          "Average health day. Maintain regular diet and exercise without overdoing either.",
+          "Minor fatigue possible. Ensure adequate rest and hydration throughout the day.",
+          "Stress may affect well-being. Practice deep breathing or short relaxation breaks.",
+          "Watch dietary intake. Avoid heavy or spicy foods that may cause discomfort."
+        ],
+        "challenging": [
+          "Low energy levels indicated. Prioritize rest and avoid strenuous activities.",
+          "Stress or anxiety may affect health. Consider stress-management techniques.",
+          "Minor ailments like headaches or digestive issues possible. Stay hydrated and rest.",
+          "Avoid neglecting health signals. Consult healthcare provider if symptoms persist."
+        ]
+      }
+    },
+    
+    "monthly": {
+      "career": {
+        "week1": {
+          "favorable": "The month begins with professional momentum. New projects or responsibilities may be assigned. {planet} in {house} enhances your leadership capabilities.",
+          "moderate": "First week requires diligent effort on existing commitments. Avoid taking on additional workload until current tasks are completed.",
+          "challenging": "Initial week may present workplace challenges. Maintain professionalism and seek guidance from experienced colleagues when needed."
+        },
+        "week2": {
+          "favorable": "Second week brings recognition for your efforts. Superiors notice your dedication. Good time for salary discussions or position upgrades.",
+          "moderate": "Mid-month requires balanced approach. Some projects advance while others may stall temporarily.",
+          "challenging": "Workplace stress peaks in week two. Delegate tasks and avoid confrontations with colleagues."
+        },
+        "week3": {
+          "favorable": "Third week excellent for networking and professional relationships. Collaborations flourish and new opportunities emerge through contacts.",
+          "moderate": "Week three maintains steady pace. Focus on quality over quantity in deliverables.",
+          "challenging": "Late month challenges arise from miscommunication. Clarify expectations with team members and supervisors."
+        },
+        "week4": {
+          "favorable": "Month concludes on positive note. Completed projects receive appreciation. Plan for next month's goals strategically.",
+          "moderate": "Final week for wrapping up monthly objectives. Some tasks may carry over to next month.",
+          "challenging": "Month-end pressure mounts. Prioritize urgent matters and request deadline extensions if necessary."
+        }
+      },
+      "finance": {
+        "overview": {
+          "favorable": "Financially rewarding month ahead. Income sources expand and savings accumulate. {planet} supports material prosperity throughout this period.",
+          "moderate": "Month maintains financial stability with moderate income and controlled expenses. Neither significant gains nor major setbacks expected.",
+          "challenging": "Exercise financial restraint this month. Unexpected expenses likely. Avoid major purchases and risky investments."
+        },
+        "investment": {
+          "favorable": "Excellent month for long-term investments. Property, stocks, or retirement funds show promise. Consult financial advisor for optimal strategies.",
+          "moderate": "Modest investment opportunities available. Research thoroughly before committing funds.",
+          "challenging": "Not favorable for new investments. Focus on protecting existing assets and maintaining liquidity."
+        }
+      },
+      "relationship": {
+        "romantic": {
+          "favorable": "Romance blossoms this month. Couples experience renewed passion and understanding. Singles may meet significant prospects at social gatherings or through friends.",
+          "moderate": "Relationships require conscious effort. Plan quality time despite busy schedules. Communication prevents minor conflicts from escalating.",
+          "challenging": "Relationship tests possible this month. Old patterns resurface requiring honest dialogue and mutual compromise for resolution."
+        },
+        "family": {
+          "favorable": "Family harmony prevails. Celebrations or gatherings bring joy. Support from relatives strengthens during important decisions.",
+          "moderate": "Family dynamics remain generally peaceful with occasional differences of opinion requiring diplomatic handling.",
+          "challenging": "Family tensions may arise from misunderstandings or conflicting priorities. Practice patience and avoid reactive responses."
+        }
+      },
+      "health": {
+        "physical": {
+          "favorable": "Robust health throughout the month. Energy levels support both work and exercise. Ideal time to establish sustainable fitness routines.",
+          "moderate": "Health remains stable with minor fluctuations. Maintain preventive care and avoid neglecting symptoms.",
+          "challenging": "Vulnerable period for health. Stress management crucial. Watch diet, ensure adequate sleep, and avoid overexertion."
+        },
+        "mental": {
+          "favorable": "Mental clarity and emotional balance characterize this month. Meditation or mindfulness practices yield excellent results.",
+          "moderate": "Mental health adequate but requires conscious maintenance. Balance work stress with relaxation activities.",
+          "challenging": "Stress or anxiety may affect well-being. Professional counseling or support groups beneficial if needed."
+        }
+      }
+    },
+    
+    "yearly": {
+      "Q1": {
+        "theme": "Foundation Building",
+        "career": "First quarter establishes yearly professional trajectory. {planet} in {house} influences career direction significantly.",
+        "finance": "Financial planning crucial in Q1. Budget carefully for year ahead.",
+        "relationship": "Relationships require attention and nurturing. Set relationship goals early.",
+        "health": "Focus on preventive health measures. Establish exercise and diet routines."
+      },
+      "Q2": {
+        "theme": "Growth and Expansion", 
+        "career": "Professional opportunities multiply in Q2. Network actively and showcase skills.",
+        "finance": "Income potential increases. Consider diversifying revenue streams.",
+        "relationship": "Social life expands. New connections enrich personal life.",
+        "health": "Maintain consistency in health routines established in Q1."
+      },
+      "Q3": {
+        "theme": "Consolidation",
+        "career": "Mid-year review of professional progress. Adjust strategies as needed.",
+        "finance": "Financial gains from earlier investments materialize. Review portfolio.",
+        "relationship": "Relationships deepen. Important commitments or celebrations possible.",
+        "health": "Monitor stress levels. Summer activities support overall wellness."
+      },
+      "Q4": {
+        "theme": "Completion and Planning",
+        "career": "Year concludes with recognition for annual achievements. Plan next year's objectives.",
+        "finance": "Year-end bonuses or unexpected income likely. Tax planning important.",
+        "relationship": "Family gatherings and celebrations bring joy. Reflect on relationship growth.",
+        "health": "Energy may dip towards year-end. Prioritize rest and rejuvenation."
+      }
+    },
+    
+    "lifetime": {
+      "career": {
+        "early_career": "Foundation years focus on skill development and gaining experience. Multiple job changes expected as you discover your true calling.",
+        "mid_career": "Professional peak period with leadership roles and financial success. {planet} indicates strong potential in {field} sector.",
+        "late_career": "Transition towards mentoring or consulting. Accumulated wisdom becomes valuable asset.",
+        "retirement": "Post-retirement engagement in social causes or passion projects brings fulfillment."
+      },
+      "finance": {
+        "accumulation": "Wealth building occurs gradually through consistent effort. {planet} in {house} indicates primary income sources from {source}.",
+        "peak_prosperity": "Financial peak between ages {age_range}. Property investments particularly favorable.",
+        "legacy": "Estate planning important for transferring wealth to next generation smoothly."
+      },
+      "relationship": {
+        "marriage": "Marriage indicated around age {age}. Partner likely to be {characteristics}. Compatibility strongest with {signs}.",
+        "family": "Children bring joy and responsibility. {number} children indicated. Family life generally harmonious with normal challenges.",
+        "later_years": "Companionship and mutual support characterize later relationship years. Grandchildren bring renewed purpose."
+      },
+      "health": {
+        "constitution": "Overall constitution is {type}. Vulnerable areas include {body_parts}. Preventive care crucial.",
+        "major_periods": "Health challenges possible around ages {ages}. Regular checkups and healthy lifestyle mitigate risks.",
+        "longevity": "Potential for long life with proper health management. {planet} influences vitality significantly."
+      }
+    }
+  },
+  
+  "scoring_guidelines": {
+    "excellent": {
+      "score_range": "8-10",
+      "description": "Highly favorable period. Maximum opportunities and minimal challenges."
+    },
+    "good": {
+      "score_range": "6-7",
+      "description": "Favorable period with good prospects. Some minor challenges manageable."
+    },
+    "moderate": {
+      "score_range": "4-5",
+      "description": "Balanced period. Equal mix of opportunities and challenges requiring effort."
+    },
+    "challenging": {
+      "score_range": "2-3",
+      "description": "Difficult period requiring caution and patience. Focus on damage control."
+    },
+    "very_challenging": {
+      "score_range": "1",
+      "description": "Highly challenging period. Minimize risks, postpone important decisions."
+    }
+  },
+  
+  "placeholder_variables": {
+    "planet": "Planetary name (Sun, Moon, Mars, etc.)",
+    "house": "House number (1st through 12th)",
+    "sign": "Zodiac sign name",
+    "field": "Career field or industry",
+    "source": "Income source type",
+    "age": "Specific age or age range",
+    "age_range": "Age range like '35-45'",
+    "characteristics": "Partner characteristics",
+    "signs": "Compatible zodiac signs",
+    "number": "Number of children",
+    "type": "Constitution type (strong/moderate/delicate)",
+    "body_parts": "Vulnerable body parts",
+    "ages": "Ages for health concerns"
+  }
+}

@@ -1,0 +1,33 @@
+Frontend: PS C:\@Personal\shuktoai\Astro_ai\astro-ai\frontend> npx expo start --clear
+Backend: (venv) PS C:\@Personal\shuktoai\Astro_ai\astro-ai\backend\functions\files> node index.js
+C:\@Personal\shuktoai\Astro_ai\astro-ai\astrology-engine> py -m uvicorn api.main:app --reload --port 8000  
+
+PostGRESQL PW:  'watsonx_secure_2024'
+         Name         |    Owner     | Encoding |      Collate       |       Ctype        | ICU Locale | Locale Provider |     Access privileges
+----------------------+--------------+----------+--------------------+--------------------+------------+-----------------+---------------------------
+ ai_services_platform | watsonx_user | UTF8     | English_India.1252 | English_India.1252 |            | libc            |
+ astroai_dev          | postgres     | UTF8     | English_India.1252 | English_India.1252 |            | libc            |
+ postgres             | postgres     | UTF8     | English_India.1252 | English_India.1252 |            | libc            |
+ template0            | postgres     | UTF8     | English_India.1252 | English_India.1252 |            | libc            | =c/postgres              +
+                      |              |          |                    |                    |            |                 | postgres=CTc/postgres
+ template1            | postgres     | UTF8     | English_India.1252 | English_India.1252 |            | libc            | =c/postgres              +
+                      |              |          |                    |                    |            |                 | postgres=CTc/postgres
+ watsonx_testing      | postgres     | UTF8     | English_India.1252 | English_India.1252 |            | libc            | =Tc/postgres             +
+                      |              |          |                    |                    |            |                 | postgres=CTc/postgres    +
+                      |              |          |                    |                    |            |                 | watsonx_user=CTc/postgres
+
+
+Firebase Project: zodiacai-4d885
+
+
+  API_BASE_URL: __DEV__ 
+    ? 'http://localhost:5000/api' 
+    : 'https://api.astroai.com/api', // Change for production
+
+  PYTHON_API_URL: __DEV__
+    ? 'http://localhost:8000/api'
+
+git init
+git add .
+git push -u origin master
+Github: https://github.com/tosurajitc/ZodiacAI.git    

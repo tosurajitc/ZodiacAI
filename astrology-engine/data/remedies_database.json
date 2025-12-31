@@ -1,0 +1,636 @@
+{
+  "template_version": "1.0",
+  "last_updated": "2025-01-01",
+  "description": "Complete remedies database for Vedic astrology - Gemstones, Mantras, Rituals, Donations, Lifestyle",
+  
+  "gemstones": {
+    "Sun": {
+      "primary": {
+        "name": "Ruby",
+        "sanskrit": "Manikya",
+        "color": "Deep red, pigeon blood",
+        "weight_carats": "3-6",
+        "metal": "Gold or Copper",
+        "finger": "Ring finger",
+        "hand": "Right",
+        "day_to_wear": "Sunday",
+        "time_to_wear": "Within 1 hour after sunrise",
+        "nakshatra_compatible": ["Krittika", "Uttara Phalguni", "Uttara Ashadha"],
+        "mantra_before_wearing": "Om Hraam Hreem Hraum Sah Suryaya Namaha (108 times)",
+        "benefits": ["Leadership", "Confidence", "Health", "Authority", "Father relationship", "Government favor", "Vitality"],
+        "price_range_inr": "5000-50000+ per carat",
+        "quality_indicators": ["Deep red color", "No visible inclusions", "Good clarity", "Natural origin", "Star effect (optional)"],
+        "wearing_method": "Energize on Sunday morning, wear after bath, face east while wearing",
+        "precautions": ["Check for cracks", "Avoid artificial/synthetic", "Remove during surgery/X-ray"],
+        "suitable_for": ["Weak Sun", "Leo ascendant", "Sun Mahadasha", "Government jobs", "Leadership roles"]
+      },
+      "substitutes": [
+        {
+          "name": "Red Garnet",
+          "weight_carats": "5-8",
+          "price_range_inr": "500-5000 per carat",
+          "effectiveness": "70%"
+        },
+        {
+          "name": "Red Spinel",
+          "weight_carats": "4-7",
+          "price_range_inr": "3000-30000 per carat",
+          "effectiveness": "80%"
+        }
+      ]
+    },
+    
+    "Moon": {
+      "primary": {
+        "name": "Pearl",
+        "sanskrit": "Moti",
+        "color": "White, cream, lustrous",
+        "weight_carats": "4-7",
+        "metal": "Silver",
+        "finger": "Little finger",
+        "hand": "Right",
+        "day_to_wear": "Monday",
+        "time_to_wear": "Evening during waxing moon",
+        "nakshatra_compatible": ["Rohini", "Hasta", "Shravana"],
+        "mantra_before_wearing": "Om Shraam Shreem Shraum Sah Chandraya Namaha (108 times)",
+        "benefits": ["Mental peace", "Emotional balance", "Mother relationship", "Intuition", "Memory", "Public relations"],
+        "price_range_inr": "2000-20000 per pearl",
+        "quality_indicators": ["Round shape", "Good luster", "Natural origin", "South sea/Basra preferred", "Smooth surface"],
+        "wearing_method": "Energize on Monday evening, wear during waxing moon, dip in milk before wearing",
+        "precautions": ["Replace every 2 years", "Keep away from chemicals", "Clean with mild soap"],
+        "suitable_for": ["Weak Moon", "Cancer ascendant", "Moon Mahadasha", "Mental issues", "Public dealings"]
+      },
+      "substitutes": [
+        {
+          "name": "Moonstone",
+          "weight_carats": "5-8",
+          "price_range_inr": "500-3000 per carat",
+          "effectiveness": "60%"
+        }
+      ]
+    },
+    
+    "Mars": {
+      "primary": {
+        "name": "Red Coral",
+        "sanskrit": "Moonga",
+        "color": "Deep red, organic",
+        "weight_carats": "5-8",
+        "metal": "Gold, Copper, or Silver",
+        "finger": "Ring finger",
+        "hand": "Right",
+        "day_to_wear": "Tuesday",
+        "time_to_wear": "Morning within 1 hour after sunrise",
+        "nakshatra_compatible": ["Mrigashira", "Chitra", "Dhanishta"],
+        "mantra_before_wearing": "Om Kraam Kreem Kraum Sah Bhaumaya Namaha (108 times)",
+        "benefits": ["Courage", "Energy", "Property", "Sibling harmony", "Sports performance", "Mangal Dosha remedy"],
+        "price_range_inr": "1000-10000 per carat",
+        "quality_indicators": ["Uniform red color", "No cracks", "Organic Italian/Japanese coral", "Smooth texture"],
+        "wearing_method": "Energize on Tuesday morning, wear after Hanuman puja, face south",
+        "precautions": ["Check for cracks carefully", "Avoid fake plastic coral", "Replace if broken"],
+        "suitable_for": ["Weak Mars", "Aries/Scorpio ascendant", "Mars Mahadasha", "Manglik dosha", "Low energy"]
+      },
+      "substitutes": [
+        {
+          "name": "Carnelian",
+          "weight_carats": "6-10",
+          "price_range_inr": "200-2000 per carat",
+          "effectiveness": "50%"
+        },
+        {
+          "name": "Red Agate",
+          "weight_carats": "6-10",
+          "price_range_inr": "300-2000 per carat",
+          "effectiveness": "55%"
+        }
+      ]
+    },
+    
+    "Mercury": {
+      "primary": {
+        "name": "Emerald",
+        "sanskrit": "Panna",
+        "color": "Green, transparent",
+        "weight_carats": "3-6",
+        "metal": "Gold or Silver",
+        "finger": "Little finger",
+        "hand": "Right",
+        "day_to_wear": "Wednesday",
+        "time_to_wear": "Morning within 1 hour after sunrise",
+        "nakshatra_compatible": ["Ashlesha", "Jyeshtha", "Revati"],
+        "mantra_before_wearing": "Om Braam Breem Braum Sah Budhaya Namaha (108 times)",
+        "benefits": ["Communication", "Business", "Intelligence", "Nervous system", "Education", "Analytical skills"],
+        "price_range_inr": "10000-100000+ per carat",
+        "quality_indicators": ["Deep green color", "Good transparency", "Minimal inclusions", "Colombian/Zambian origin"],
+        "wearing_method": "Energize on Wednesday morning, wear after Vishnu puja, face north",
+        "precautions": ["Very delicate - handle carefully", "Avoid impacts", "Check clarity regularly"],
+        "suitable_for": ["Weak Mercury", "Gemini/Virgo ascendant", "Mercury Mahadasha", "Business", "Students"]
+      },
+      "substitutes": [
+        {
+          "name": "Green Tourmaline",
+          "weight_carats": "4-7",
+          "price_range_inr": "3000-20000 per carat",
+          "effectiveness": "70%"
+        },
+        {
+          "name": "Peridot",
+          "weight_carats": "4-7",
+          "price_range_inr": "2000-15000 per carat",
+          "effectiveness": "65%"
+        },
+        {
+          "name": "Green Jade",
+          "weight_carats": "5-8",
+          "price_range_inr": "1000-10000 per carat",
+          "effectiveness": "60%"
+        }
+      ]
+    },
+    
+    "Jupiter": {
+      "primary": {
+        "name": "Yellow Sapphire",
+        "sanskrit": "Pukhraj",
+        "color": "Golden yellow, transparent",
+        "weight_carats": "3-6",
+        "metal": "Gold",
+        "finger": "Index finger",
+        "hand": "Right",
+        "day_to_wear": "Thursday",
+        "time_to_wear": "Morning within 1 hour after sunrise",
+        "nakshatra_compatible": ["Punarvasu", "Vishakha", "Purva Bhadrapada"],
+        "mantra_before_wearing": "Om Graam Greem Graum Sah Gurave Namaha (108 times)",
+        "benefits": ["Wisdom", "Wealth", "Children", "Marriage", "Spiritual growth", "Fortune", "Higher education"],
+        "price_range_inr": "5000-50000+ per carat",
+        "quality_indicators": ["Bright yellow color", "High clarity", "Ceylon/Kashmir origin", "No heating treatment"],
+        "wearing_method": "Energize on Thursday morning, wear after Guru puja, face northeast",
+        "precautions": ["Ensure natural unheated stone", "Check authenticity certificate", "Clean monthly"],
+        "suitable_for": ["Weak Jupiter", "Sagittarius/Pisces ascendant", "Jupiter Mahadasha", "Childless couples", "Financial growth"]
+      },
+      "substitutes": [
+        {
+          "name": "Yellow Topaz",
+          "weight_carats": "4-7",
+          "price_range_inr": "1000-8000 per carat",
+          "effectiveness": "75%"
+        },
+        {
+          "name": "Citrine",
+          "weight_carats": "5-8",
+          "price_range_inr": "500-3000 per carat",
+          "effectiveness": "60%"
+        },
+        {
+          "name": "Yellow Tourmaline",
+          "weight_carats": "4-7",
+          "price_range_inr": "3000-15000 per carat",
+          "effectiveness": "70%"
+        }
+      ]
+    },
+    
+    "Venus": {
+      "primary": {
+        "name": "Diamond",
+        "sanskrit": "Heera",
+        "color": "Colorless, brilliant",
+        "weight_carats": "1-2",
+        "metal": "Silver, Platinum, or White Gold",
+        "finger": "Middle finger or Ring finger",
+        "hand": "Right",
+        "day_to_wear": "Friday",
+        "time_to_wear": "Morning within 1 hour after sunrise",
+        "nakshatra_compatible": ["Bharani", "Purva Phalguni", "Purva Ashadha"],
+        "mantra_before_wearing": "Om Draam Dreem Draum Sah Shukraya Namaha (108 times)",
+        "benefits": ["Love", "Marriage", "Luxury", "Art", "Beauty", "Material comforts", "Creativity"],
+        "price_range_inr": "50000-500000+ per carat",
+        "quality_indicators": ["4Cs - Cut, Clarity, Color, Carat", "GIA/IGI certification", "Colorless grade"],
+        "wearing_method": "Energize on Friday morning, wear after Lakshmi puja, face southeast",
+        "precautions": ["Get certified stone", "Ensure conflict-free", "Professional setting required"],
+        "suitable_for": ["Weak Venus", "Taurus/Libra ascendant", "Venus Mahadasha", "Marriage prospects", "Artists"]
+      },
+      "substitutes": [
+        {
+          "name": "White Sapphire",
+          "weight_carats": "2-4",
+          "price_range_inr": "5000-30000 per carat",
+          "effectiveness": "80%"
+        },
+        {
+          "name": "White Zircon",
+          "weight_carats": "3-5",
+          "price_range_inr": "1000-5000 per carat",
+          "effectiveness": "60%"
+        },
+        {
+          "name": "White Topaz",
+          "weight_carats": "3-5",
+          "price_range_inr": "800-4000 per carat",
+          "effectiveness": "55%"
+        }
+      ]
+    },
+    
+    "Saturn": {
+      "primary": {
+        "name": "Blue Sapphire",
+        "sanskrit": "Neelam",
+        "color": "Deep blue, transparent",
+        "weight_carats": "4-7",
+        "metal": "Silver, Iron, or Panchdhatu (5 metals)",
+        "finger": "Middle finger",
+        "hand": "Right",
+        "day_to_wear": "Saturday",
+        "time_to_wear": "Evening after sunset",
+        "nakshatra_compatible": ["Pushya", "Anuradha", "Uttara Bhadrapada"],
+        "mantra_before_wearing": "Om Praam Preem Praum Sah Shanaye Namaha (108 times)",
+        "benefits": ["Discipline", "Patience", "Longevity", "Karmic relief", "Career stability", "Sade Sati remedy"],
+        "price_range_inr": "10000-100000+ per carat",
+        "quality_indicators": ["Deep blue color", "High clarity", "Ceylon origin preferred", "Natural unheated"],
+        "wearing_method": "MANDATORY 3-DAY TRIAL first, energize on Saturday evening, Hanuman blessings essential",
+        "precautions": ["CRITICAL: Must trial for 3 days before permanent wearing", "Remove immediately if negative effects", "Not suitable for everyone"],
+        "trial_period": {
+          "duration": "3 days",
+          "method": "Keep under pillow or wear for short periods",
+          "positive_signs": ["Peaceful sleep", "Good dreams", "Positive events", "Mental clarity"],
+          "negative_signs": ["Nightmares", "Accidents", "Losses", "Health issues", "Conflicts"],
+          "action_if_negative": "STOP immediately, never wear this stone, try Amethyst instead"
+        },
+        "suitable_for": ["Strong Saturn with good placement", "Capricorn/Aquarius ascendant", "Sade Sati (with caution)", "Karmic issues"]
+      },
+      "substitutes": [
+        {
+          "name": "Amethyst",
+          "weight_carats": "5-8",
+          "price_range_inr": "500-5000 per carat",
+          "effectiveness": "60%",
+          "note": "Safer alternative, no trial needed"
+        },
+        {
+          "name": "Blue Topaz",
+          "weight_carats": "5-8",
+          "price_range_inr": "1000-8000 per carat",
+          "effectiveness": "50%"
+        },
+        {
+          "name": "Lapis Lazuli",
+          "weight_carats": "6-10",
+          "price_range_inr": "500-3000 per carat",
+          "effectiveness": "45%"
+        }
+      ]
+    },
+    
+    "Rahu": {
+      "primary": {
+        "name": "Hessonite Garnet",
+        "sanskrit": "Gomed",
+        "color": "Honey/brown, transparent",
+        "weight_carats": "5-8",
+        "metal": "Silver or Panchdhatu",
+        "finger": "Middle finger",
+        "hand": "Right",
+        "day_to_wear": "Saturday",
+        "time_to_wear": "Evening after sunset",
+        "nakshatra_compatible": ["Ardra", "Swati", "Shatabhisha"],
+        "mantra_before_wearing": "Om Bhraam Bhreem Bhraum Sah Rahave Namaha (108 times)",
+        "benefits": ["Mental clarity", "Foreign opportunities", "Material success", "Innovation", "Overcoming obstacles"],
+        "price_range_inr": "1500-15000 per carat",
+        "quality_indicators": ["Honey color preferred", "Good transparency", "Sri Lankan origin", "Uniform color"],
+        "wearing_method": "Energize on Saturday evening, wear after Durga puja, face southwest",
+        "precautions": ["Check for inclusions", "Avoid dark/opaque stones", "Clean regularly"],
+        "suitable_for": ["Weak Rahu", "Rahu Mahadasha", "Foreign settlement", "Technology careers", "Political ambitions"]
+      },
+      "substitutes": [
+        {
+          "name": "Red Garnet",
+          "weight_carats": "6-10",
+          "price_range_inr": "800-5000 per carat",
+          "effectiveness": "50%"
+        },
+        {
+          "name": "Spessartite Garnet",
+          "weight_carats": "5-8",
+          "price_range_inr": "2000-10000 per carat",
+          "effectiveness": "60%"
+        }
+      ]
+    },
+    
+    "Ketu": {
+      "primary": {
+        "name": "Cat's Eye",
+        "sanskrit": "Lehsunia/Vaidurya",
+        "color": "Greenish-yellow with chatoyancy",
+        "weight_carats": "5-8",
+        "metal": "Silver or Panchdhatu",
+        "finger": "Middle finger",
+        "hand": "Right",
+        "day_to_wear": "Wednesday or Thursday",
+        "time_to_wear": "Evening after sunset",
+        "nakshatra_compatible": ["Ashwini", "Magha", "Mula"],
+        "mantra_before_wearing": "Om Sraam Sreem Sraum Sah Ketave Namaha (108 times)",
+        "benefits": ["Spirituality", "Intuition", "Moksha", "Hidden knowledge", "Detachment", "Psychic abilities"],
+        "price_range_inr": "2000-20000 per carat",
+        "quality_indicators": ["Clear cat's eye effect", "Chrysoberyl variety best", "Good chatoyancy", "Sri Lankan origin"],
+        "wearing_method": "TRIAL RECOMMENDED for 3 days, energize on Wednesday/Thursday, Ganesha blessings",
+        "precautions": ["Trial period recommended", "Not for everyone", "Remove if negative effects"],
+        "suitable_for": ["Weak Ketu", "Ketu Mahadasha", "Spiritual seekers", "Researchers", "Occult practitioners"]
+      },
+      "substitutes": [
+        {
+          "name": "Turquoise",
+          "weight_carats": "6-10",
+          "price_range_inr": "500-3000 per carat",
+          "effectiveness": "50%"
+        },
+        {
+          "name": "Tiger Eye",
+          "weight_carats": "7-12",
+          "price_range_inr": "200-1000 per carat",
+          "effectiveness": "40%"
+        }
+      ]
+    }
+  },
+  
+  "mantras": {
+    "Sun": {
+      "beej_mantra": "Om Hraam Hreem Hraum Sah Suryaya Namaha",
+      "simple_mantra": "Om Suryaya Namaha",
+      "gayatri": "Om Bhaskaraya Vidmahe Divakaraya Dhimahi Tanno Surya Prachodayat",
+      "moola_mantra": "Om Ghrani Suryaya Aditya Om",
+      "repetitions": {"daily": 108, "weekly_special": 7000, "total_siddhi": 100000},
+      "benefits": ["Leadership", "Health", "Confidence", "Authority", "Father's blessings"],
+      "best_time": "Sunrise or early morning (5-7 AM)",
+      "direction": "East",
+      "deity": "Surya Dev"
+    },
+    "Moon": {
+      "beej_mantra": "Om Shraam Shreem Shraum Sah Chandraya Namaha",
+      "simple_mantra": "Om Chandraya Namaha",
+      "gayatri": "Om Padmadhwajaya Vidmahe Hema Roopaya Dhimahi Tanno Chandra Prachodayat",
+      "moola_mantra": "Om Som Somaya Namah",
+      "repetitions": {"daily": 108, "weekly_special": 11000, "total_siddhi": 110000},
+      "benefits": ["Mental peace", "Emotional balance", "Mother's blessings", "Intuition"],
+      "best_time": "Evening during waxing moon (7-9 PM)",
+      "direction": "Northwest",
+      "deity": "Chandra Dev"
+    },
+    "Mars": {
+      "beej_mantra": "Om Kraam Kreem Kraum Sah Bhaumaya Namaha",
+      "simple_mantra": "Om Mangalaya Namaha",
+      "gayatri": "Om Angarakaya Vidmahe Shakti Hasthaya Dhimahi Tanno Bhauma Prachodayat",
+      "moola_mantra": "Om Angarakaya Namaha",
+      "hanuman_mantra": "Om Hanumate Namaha (very effective for Mars)",
+      "repetitions": {"daily": 108, "weekly_special": 10000, "total_siddhi": 100000},
+      "benefits": ["Courage", "Energy", "Property", "Mangal Dosha remedy", "Sibling harmony"],
+      "best_time": "Tuesday morning (6-8 AM)",
+      "direction": "South",
+      "deity": "Mangal Dev / Hanuman"
+    },
+    "Mercury": {
+      "beej_mantra": "Om Braam Breem Braum Sah Budhaya Namaha",
+      "simple_mantra": "Om Budhaya Namaha",
+      "gayatri": "Om Gajadhwajaya Vidmahe Sukha Hasthaya Dhimahi Tanno Budha Prachodayat",
+      "moola_mantra": "Om Bum Budhaya Namah",
+      "repetitions": {"daily": 108, "weekly_special": 9000, "total_siddhi": 90000},
+      "benefits": ["Intelligence", "Communication", "Business", "Education"],
+      "best_time": "Wednesday morning or evening (6-8 AM or PM)",
+      "direction": "North",
+      "deity": "Budha Dev / Vishnu"
+    },
+    "Jupiter": {
+      "beej_mantra": "Om Graam Greem Graum Sah Gurave Namaha",
+      "simple_mantra": "Om Gurave Namaha",
+      "gayatri": "Om Vrishabadhwajaya Vidmahe Kruni Hasthaya Dhimahi Tanno Guru Prachodayat",
+      "moola_mantra": "Om Brihaspataye Namah",
+      "repetitions": {"daily": 108, "weekly_special": 19000, "total_siddhi": 190000},
+      "benefits": ["Wisdom", "Wealth", "Children", "Marriage", "Spiritual growth"],
+      "best_time": "Thursday morning (6-8 AM)",
+      "direction": "Northeast",
+      "deity": "Guru/Brihaspati"
+    },
+    "Venus": {
+      "beej_mantra": "Om Draam Dreem Draum Sah Shukraya Namaha",
+      "simple_mantra": "Om Shukraya Namaha",
+      "gayatri": "Om Ashwadhwajaya Vidmahe Dhanur Hasthaya Dhimahi Tanno Shukra Prachodayat",
+      "moola_mantra": "Om Shum Shukraya Namah",
+      "repetitions": {"daily": 108, "weekly_special": 16000, "total_siddhi": 160000},
+      "benefits": ["Love", "Marriage", "Luxury", "Art", "Beauty"],
+      "best_time": "Friday morning (6-8 AM)",
+      "direction": "Southeast",
+      "deity": "Shukra Dev / Lakshmi"
+    },
+    "Saturn": {
+      "beej_mantra": "Om Praam Preem Praum Sah Shanaye Namaha",
+      "simple_mantra": "Om Shanaye Namaha",
+      "gayatri": "Om Kakadhwajaya Vidmahe Khadga Hasthaya Dhimahi Tanno Mandah Prachodayat",
+      "moola_mantra": "Om Sham Shanicharaya Namah",
+      "hanuman_chalisa": "Reading Hanuman Chalisa daily is highly effective",
+      "repetitions": {"daily": 108, "weekly_special": 23000, "total_siddhi": 230000},
+      "benefits": ["Discipline", "Patience", "Sade Sati relief", "Karmic balance"],
+      "best_time": "Saturday evening (6-8 PM)",
+      "direction": "West",
+      "deity": "Shani Dev / Hanuman"
+    },
+    "Rahu": {
+      "beej_mantra": "Om Bhraam Bhreem Bhraum Sah Rahave Namaha",
+      "simple_mantra": "Om Rahave Namaha",
+      "gayatri": "Om Naakadhwajaya Vidmahe Padma Hasthaya Dhimahi Tanno Rahu Prachodayat",
+      "moola_mantra": "Om Raam Rahave Namah",
+      "durga_mantra": "Om Dum Durgaye Namaha (very effective)",
+      "repetitions": {"daily": 108, "weekly_special": 18000, "total_siddhi": 180000},
+      "benefits": ["Mental clarity", "Foreign success", "Material gains", "Innovation"],
+      "best_time": "Saturday evening or night (8-10 PM)",
+      "direction": "Southwest",
+      "deity": "Rahu / Durga"
+    },
+    "Ketu": {
+      "beej_mantra": "Om Sraam Sreem Sraum Sah Ketave Namaha",
+      "simple_mantra": "Om Ketave Namaha",
+      "gayatri": "Om Ashwadhwajaya Vidmahe Soola Hasthaya Dhimahi Tanno Ketu Prachodayat",
+      "moola_mantra": "Om Kem Ketave Namah",
+      "ganesha_mantra": "Om Gam Ganapataye Namaha (very effective)",
+      "repetitions": {"daily": 108, "weekly_special": 17000, "total_siddhi": 170000},
+      "benefits": ["Spirituality", "Moksha", "Intuition", "Hidden knowledge"],
+      "best_time": "Thursday or Wednesday evening (6-8 PM)",
+      "direction": "Northeast",
+      "deity": "Ketu / Ganesha"
+    }
+  },
+  
+  "donations": {
+    "Sun": ["Wheat", "Jaggery", "Red cloth", "Copper items", "Ruby (if affordable)", "Gold"],
+    "Moon": ["Rice", "Milk", "White cloth", "Silver items", "Pearl (if affordable)", "White flowers"],
+    "Mars": ["Red lentils (Masoor dal)", "Jaggery", "Red cloth", "Copper", "Coral (if affordable)", "Blood donation"],
+    "Mercury": ["Green vegetables", "Green cloth", "Green moong dal", "Brass items", "Books", "Educational material"],
+    "Jupiter": ["Yellow gram (Chana dal)", "Turmeric", "Yellow cloth", "Gold", "Yellow sapphire (if affordable)", "Yellow sweets"],
+    "Venus": ["Rice", "Sugar", "White cloth", "Cow donation", "White sweets", "Diamond (if affordable)"],
+    "Saturn": ["Black sesame", "Mustard oil", "Black cloth", "Iron items", "Black udad dal", "Shoes to poor"],
+    "Rahu": ["Coconut", "Black/blue cloth", "Blanket", "Sesame", "Mustard oil", "Food to outcasts"],
+    "Ketu": ["Sesame", "Flag/banner", "Multicolor cloth", "Blanket", "Food to dogs", "Spiritual texts"]
+  },
+  
+  "fasting_days": {
+    "Sun": {"day": "Sunday", "type": "Sunrise to sunset", "food_allowed": "Fruits and milk after sunset"},
+    "Moon": {"day": "Monday", "type": "Sunrise to sunset", "food_allowed": "Milk and fruits, one meal at night"},
+    "Mars": {"day": "Tuesday", "type": "Sunrise to sunset", "food_allowed": "Sweet items once at night"},
+    "Mercury": {"day": "Wednesday", "type": "Sunrise to sunset", "food_allowed": "Green vegetables, fruits"},
+    "Jupiter": {"day": "Thursday", "type": "Sunrise to sunset", "food_allowed": "Yellow foods, gram"},
+    "Venus": {"day": "Friday", "type": "Sunrise to sunset", "food_allowed": "White foods after sunset"},
+    "Saturn": {"day": "Saturday", "type": "Sunrise to sunset", "food_allowed": "One meal at night, no salt"},
+    "Rahu": {"day": "Saturday", "type": "Optional", "food_allowed": "Simple vegetarian"},
+    "Ketu": {"day": "Thursday", "type": "Optional", "food_allowed": "Simple vegetarian"}
+  },
+  
+  "rudraksha": {
+    "Sun": {"mukhi": "1 or 12", "benefits": "Leadership, confidence, health"},
+    "Moon": {"mukhi": "2", "benefits": "Emotional balance, relationships"},
+    "Mars": {"mukhi": "3", "benefits": "Courage, energy, Mangal Dosha remedy"},
+    "Mercury": {"mukhi": "4", "benefits": "Intelligence, communication, learning"},
+    "Jupiter": {"mukhi": "5", "benefits": "Wisdom, wealth, health (most common)"},
+    "Venus": {"mukhi": "6", "benefits": "Love, luxury, creativity"},
+    "Saturn": {"mukhi": "7 or 14", "benefits": "Sade Sati relief, discipline"},
+    "Rahu": {"mukhi": "8", "benefits": "Obstacles removal, success"},
+    "Ketu": {"mukhi": "9", "benefits": "Spirituality, Moksha, protection"}
+  },
+  
+  "yantra": {
+    "Sun": {"name": "Surya Yantra", "material": "Copper/Gold", "usage": "Keep in puja room facing east"},
+    "Moon": {"name": "Chandra Yantra", "material": "Silver", "usage": "Keep in bedroom or puja room"},
+    "Mars": {"name": "Mangal Yantra", "material": "Copper", "usage": "Energize on Tuesday, keep in south"},
+    "Mercury": {"name": "Budh Yantra", "material": "Brass/Silver", "usage": "Keep in study or office"},
+    "Jupiter": {"name": "Guru Yantra", "material": "Gold/Copper", "usage": "Keep in puja room facing northeast"},
+    "Venus": {"name": "Shukra Yantra", "material": "Silver", "usage": "Keep in bedroom or living room"},
+    "Saturn": {"name": "Shani Yantra", "material": "Iron/Silver", "usage": "Energize on Saturday, keep in west"},
+    "Rahu": {"name": "Rahu Yantra", "material": "Silver", "usage": "Keep in southwest corner"},
+    "Ketu": {"name": "Ketu Yantra", "material": "Silver", "usage": "Keep in northeast corner"}
+  },
+  
+  "lifestyle_remedies": {
+    "general": [
+      "Wake up early before sunrise (Brahma Muhurta 4-6 AM)",
+      "Practice daily meditation for 15-20 minutes",
+      "Maintain cleanliness and personal hygiene",
+      "Be honest and ethical in all dealings",
+      "Respect elders, parents, and teachers",
+      "Help those in need without expectation",
+      "Avoid alcohol and non-vegetarian food (especially on fasting days)",
+      "Practice gratitude daily",
+      "Regular exercise or yoga",
+      "Spend time in nature"
+    ],
+    "Sun": [
+      "Offer water to rising sun with copper vessel",
+      "Practice Surya Namaskar daily",
+      "Respect father and authority figures",
+      "Wear red/orange colors on Sunday",
+      "Face east while working"
+    ],
+    "Moon": [
+      "Drink water from silver vessel",
+      "Spend time near water bodies",
+      "Respect mother and women",
+      "Wear white on Monday",
+      "Practice emotional regulation"
+    ],
+    "Mars": [
+      "Regular physical exercise",
+      "Practice patience and anger management",
+      "Respect siblings",
+      "Wear red on Tuesday",
+      "Recite Hanuman Chalisa"
+    ],
+    "Mercury": [
+      "Practice good communication",
+      "Read and write regularly",
+      "Help students or teach",
+      "Wear green on Wednesday",
+      "Develop analytical skills"
+    ],
+    "Jupiter": [
+      "Study spiritual texts",
+      "Respect teachers and gurus",
+      "Practice generosity",
+      "Wear yellow on Thursday",
+      "Teach others selflessly"
+    ],
+    "Venus": [
+      "Appreciate art and beauty",
+      "Maintain harmonious relationships",
+      "Practice creativity",
+      "Wear white on Friday",
+      "Respect women and partners"
+    ],
+    "Saturn": [
+      "Serve the poor and elderly",
+      "Practice discipline and patience",
+      "Feed crows on Saturday",
+      "Wear black/dark blue on Saturday",
+      "Do hard work without complaint"
+    ],
+    "Rahu": [
+      "Practice meditation to calm mind",
+      "Avoid over-ambition",
+      "Serve outcasts or foreigners",
+      "Minimize materialistic desires",
+      "Recite Durga Chalisa"
+    ],
+    "Ketu": [
+      "Practice spiritual disciplines",
+      "Develop detachment",
+      "Feed and care for dogs",
+      "Study ancient wisdom",
+      "Practice yoga and meditation"
+    ]
+  },
+  
+  "color_therapy": {
+    "Sun": ["Red", "Orange", "Gold"],
+    "Moon": ["White", "Silver", "Cream"],
+    "Mars": ["Red", "Maroon", "Scarlet"],
+    "Mercury": ["Green", "Emerald Green"],
+    "Jupiter": ["Yellow", "Gold", "Saffron"],
+    "Venus": ["White", "Pink", "Cream"],
+    "Saturn": ["Black", "Dark Blue", "Navy"],
+    "Rahu": ["Smoky", "Dark Grey", "Black"],
+    "Ketu": ["Brown", "Grey", "Maroon"]
+  },
+  
+  "special_pujas": {
+    "Mangal_Dosha": "Mangal Bhat Puja, Hanuman puja on Tuesdays",
+    "Sade_Sati": "Hanuman Chalisa daily, Shani Shanti puja",
+    "Kaal_Sarp_Dosha": "Kaal Sarp Dosha Nivaran puja at Trimbakeshwar",
+    "Pitra_Dosha": "Pitra Tarpan, Shradh rituals, feeding Brahmins",
+    "General_Remedy": "Navagraha puja, Rudrabhishek, Lakshmi puja"
+  },
+  
+  "remedy_guidelines": {
+    "important_notes": [
+      "Consult qualified astrologer before wearing gemstones",
+      "Faith and consistency more important than perfection",
+      "Combine multiple remedies for best results",
+      "Remedies complement, not replace, practical efforts",
+      "Never wear Blue Sapphire or Cat's Eye without trial period",
+      "Maintain positive attitude and ethical conduct",
+      "Remedies work gradually - patience required"
+    ],
+    "when_to_consult": [
+      "Before wearing Blue Sapphire or Cat's Eye",
+      "If experiencing severe Dasha effects",
+      "For Sade Sati remedies",
+      "Before major life decisions",
+      "If multiple doshas present"
+    ],
+    "cost_effective_order": [
+      "1. Mantras (free)",
+      "2. Fasting and donations (minimal cost)",
+      "3. Lifestyle changes (free)",
+      "4. Rudraksha (affordable)",
+      "5. Substitute gemstones (moderate)",
+      "6. Primary gemstones (expensive)"
+    ]
+  }
+}

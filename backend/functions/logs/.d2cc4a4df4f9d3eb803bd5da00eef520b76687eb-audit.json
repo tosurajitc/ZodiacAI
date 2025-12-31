@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\@Personal\\shuktoai\\Astro_ai\\astro-ai\\backend\\functions\\logs\\.d2cc4a4df4f9d3eb803bd5da00eef520b76687eb-audit.json",
+    "files": [
+        {
+            "date": 1767020102349,
+            "name": "C:\\@Personal\\shuktoai\\Astro_ai\\astro-ai\\backend\\functions\\logs\\rejections-2025-12-29.log",
+            "hash": "5c6da383a9dc32743fea50db125e6ca2953dc93162ab3c8d6bdc2e257956707b"
+        },
+        {
+            "date": 1767063581503,
+            "name": "C:\\@Personal\\shuktoai\\Astro_ai\\astro-ai\\backend\\functions\\logs\\rejections-2025-12-30.log",
+            "hash": "92f4ee77a95d64e134abde86d36f863b2e72be1e603d492e9a11e0eae8de67b2"
+        }
+    ],
+    "hashType": "sha256"
+}

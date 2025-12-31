@@ -1,0 +1,427 @@
+{
+  "template_version": "1.0",
+  "last_updated": "2025-01-01",
+  "description": "Planetary meanings and interpretations for Vedic astrology - Houses, Signs, Aspects, Dignities",
+  
+  "planets": {
+    "Sun": {
+      "basic_nature": {
+        "element": "Fire",
+        "gender": "Male",
+        "quality": "Malefic (Papa Graha)",
+        "rules": "Leo",
+        "exalted_in": "Aries at 10°",
+        "debilitated_in": "Libra at 10°",
+        "mooltrikona": "Leo 0-20°",
+        "friendly_planets": ["Moon", "Mars", "Jupiter"],
+        "enemy_planets": ["Venus", "Saturn"],
+        "neutral_planets": ["Mercury"],
+        "significations": ["Soul", "Father", "Authority", "Government", "Ego", "Self-confidence", "Health", "Vitality", "Leadership"],
+        "body_parts": ["Heart", "Right eye (male)", "Bones", "Stomach"],
+        "diseases": ["Heart problems", "Eye issues", "Fever", "Bone weakness"],
+        "professions": ["Government jobs", "Politics", "Administration", "Medicine", "Pharmacy", "Gold trade"]
+      },
+      "houses": {
+        "1": "Strong personality, leadership qualities, good health, confident, may be egoistic, father's influence on life, government connections possible",
+        "2": "Good wealth from father or government, strong family values, harsh speech sometimes, income through leadership roles, eye problems possible",
+        "3": "Courage, self-made success, strained relations with siblings, short travels for work, government contracts, writing abilities",
+        "4": "Property through father, vehicle ownership, peaceful home life, mother's health concerns, real estate gains, education in prestigious institutions",
+        "5": "Intelligent children (especially sons), creative abilities, speculative gains, past life merit, spiritual inclination, good education",
+        "6": "Victory over enemies, health issues, conflicts with authority, digestive problems, success in competitive fields, medical profession",
+        "7": "Strong partner, government job for spouse, business partnerships with authorities, delayed marriage, partner may be egoistic",
+        "8": "Long life, inheritance from father, interest in occult, chronic health issues, transformative experiences, government pension benefits",
+        "9": "Highly fortunate, righteous, religious father, foreign travels, higher education, blessings of teachers, spiritual wisdom",
+        "10": "Excellent career, government position, fame, authority in profession, father's blessings, leadership roles, public recognition",
+        "11": "Fulfillment of desires, income from government, influential friends, elder siblings successful, gains through father, social recognition",
+        "12": "Expenses on father, foreign residence, spiritual seeking, eye problems, government abroad, meditation, isolation periods, hospitals"
+      },
+      "signs": {
+        "Aries": "Exalted - Maximum strength, leadership, pioneering spirit, courage, administrative abilities, headstrong",
+        "Taurus": "Stable authority, material success, stubbornness, practical leadership, slow but steady progress",
+        "Gemini": "Intellectual authority, communication skills, versatile leadership, nervous energy, multiple interests",
+        "Cancer": "Emotional leadership, nurturing authority, intuitive decisions, attachment to mother, emotional fluctuations",
+        "Leo": "Own sign - Natural leader, strong ego, generous, creative, dramatic, confident, royal bearing",
+        "Virgo": "Analytical authority, perfectionist, health conscious, service-oriented leadership, critical nature",
+        "Libra": "Debilitated - Weak ego, diplomatic, partnership oriented, compromising nature, artistic, indecisive",
+        "Scorpio": "Intense personality, secretive, transformative power, interest in occult, strong will, regenerative",
+        "Sagittarius": "Philosophical, religious, optimistic, higher education, ethical, expansive thinking, teaching abilities",
+        "Capricorn": "Disciplined authority, ambitious, practical, political abilities, slow rise to power, endurance",
+        "Aquarius": "Humanitarian leadership, unconventional, scientific mind, social causes, detached ego, innovative",
+        "Pisces": "Spiritual authority, compassionate, intuitive, artistic, dreamy, escapist tendencies, mystical"
+      }
+    },
+    
+    "Moon": {
+      "basic_nature": {
+        "element": "Water",
+        "gender": "Female",
+        "quality": "Benefic (Subha Graha)",
+        "rules": "Cancer",
+        "exalted_in": "Taurus at 3°",
+        "debilitated_in": "Scorpio at 3°",
+        "mooltrikona": "Taurus 4-20°",
+        "friendly_planets": ["Sun", "Mercury"],
+        "enemy_planets": [],
+        "neutral_planets": ["Mars", "Jupiter", "Venus", "Saturn"],
+        "significations": ["Mind", "Mother", "Emotions", "Intuition", "Public", "Nurturing", "Liquids", "Travel", "Memory"],
+        "body_parts": ["Brain", "Left eye (male)", "Blood", "Breasts", "Stomach fluids"],
+        "diseases": ["Mental disorders", "Depression", "Anxiety", "Insomnia", "Digestive issues", "Hormonal imbalance"],
+        "professions": ["Nursing", "Hospitality", "Food industry", "Dairy", "Water-related business", "Psychology", "Public relations"]
+      },
+      "houses": {
+        "1": "Emotional, intuitive, changeable personality, attractive, mother's influence strong, public appeal, mood swings, nurturing nature",
+        "2": "Wealth from mother, emotional attachment to family, fluctuating finances, income from public, soft speech, food-related income",
+        "3": "Emotional courage, close to siblings (especially sisters), short journeys, writing from heart, artistic communication, media success",
+        "4": "Very strong for domestic happiness, close to mother, multiple properties, vehicles, emotional security through home, popular locally",
+        "5": "Creative mind, emotional children, good memory, speculative mind, past life emotional karma, nurturing teacher, imagination",
+        "6": "Mental stress, mother's health issues, emotional conflicts, nursing profession, service to public, digestive troubles, anxiety",
+        "7": "Emotional partner, public business, partnership with women, mother-in-law important, trade, travel for business, dependent spouse",
+        "8": "Emotional depth, occult interests, mother's longevity concerns, inheritance from mother, psychological insight, hidden emotions, sudden changes",
+        "9": "Fortunate, religious mother, foreign travels, higher wisdom, intuitive spirituality, blessings from females, pilgrimage",
+        "10": "Popular career, public recognition, profession involving masses, mother supports career, emotional fulfillment through work, fame",
+        "11": "Emotional friendships, gains from mother, wishes fulfilled, income from public, female friends beneficial, social popularity",
+        "12": "Spiritual mind, expenses on mother, foreign residence, meditation, emotional isolation, hospitals, charitable nature, vivid dreams"
+      },
+      "signs": {
+        "Aries": "Impulsive emotions, quick mood changes, aggressive mind, pioneering intuition, impatient, enthusiastic",
+        "Taurus": "Exalted - Stable mind, strong memory, emotional security, patient, sensual, love for beauty and comfort",
+        "Gemini": "Intellectual emotions, communicative, restless mind, multiple interests, curious, versatile mood",
+        "Cancer": "Own sign - Deeply emotional, nurturing, intuitive, attached to mother, moody, caring, domestic",
+        "Leo": "Proud emotions, dramatic feelings, creative mind, need for attention, generous heart, warm personality",
+        "Virgo": "Analytical mind, practical emotions, health conscious, service oriented, critical thinking, perfectionist",
+        "Libra": "Balanced emotions, diplomatic mind, partnership need, artistic sensibility, indecisive, harmonious",
+        "Scorpio": "Debilitated - Intense emotions, secretive mind, transformative, jealous, deep feelings, psychic abilities",
+        "Sagittarius": "Optimistic mind, philosophical emotions, religious, expansive thinking, truthful, adventurous spirit",
+        "Capricorn": "Controlled emotions, practical mind, ambitious feelings, responsible, pessimistic tendencies, disciplined",
+        "Aquarius": "Detached emotions, humanitarian mind, unconventional, scientific thinking, friendly, unpredictable moods",
+        "Pisces": "Dreamy mind, compassionate emotions, psychic, artistic, escapist, spiritual, impressionable, imaginative"
+      }
+    },
+    
+    "Mars": {
+      "basic_nature": {
+        "element": "Fire",
+        "gender": "Male",
+        "quality": "Malefic (Papa Graha)",
+        "rules": "Aries, Scorpio",
+        "exalted_in": "Capricorn at 28°",
+        "debilitated_in": "Cancer at 28°",
+        "mooltrikona": "Aries 0-12°",
+        "friendly_planets": ["Sun", "Moon", "Jupiter"],
+        "enemy_planets": ["Mercury"],
+        "neutral_planets": ["Venus", "Saturn"],
+        "significations": ["Energy", "Courage", "Siblings", "Property", "Sports", "Military", "Surgery", "Accidents", "Aggression", "Passion"],
+        "body_parts": ["Blood", "Muscles", "Head", "Genitals", "Bone marrow"],
+        "diseases": ["Accidents", "Burns", "Surgery", "Blood disorders", "Inflammation", "Fever", "Cuts"],
+        "professions": ["Military", "Police", "Engineering", "Surgery", "Sports", "Real estate", "Metallurgy", "Mechanics"]
+      },
+      "houses": {
+        "1": "Energetic, courageous, aggressive personality, athletic, leadership, competitive, scars on head/face, quick temper, pioneering",
+        "2": "Harsh speech, conflict in family, gains from property/siblings, aggressive earning, technical skills for income, blood relatives issues",
+        "3": "Excellent for courage, strong siblings, self-made success, technical abilities, short travels, hands-on work, sports abilities",
+        "4": "Property gains, multiple lands, mother's health concerns, vehicle accidents possible, engineering education, domestic conflicts",
+        "5": "Children (especially sons) strong-willed, speculative risks, technical education, creativity in engineering, sports coaching",
+        "6": "Victory over enemies, surgery profession, competitive success, blood issues, conflicts, litigation wins, police/military career",
+        "7": "Manglik dosha - partner issues, delayed marriage, business conflicts, passionate spouse, energy in partnerships, arguments",
+        "8": "Accidents possible, surgery, inheritance of property, occult power, transformation through crisis, chronic inflammation, long life",
+        "9": "Fortunate for property, courage in dharma, foreign lands for work, engineering higher education, righteous action, protective",
+        "10": "Technical career, engineering, surgery, real estate profession, dynamic work, leadership position, competitive field, recognition",
+        "11": "Gains from siblings/property, energetic friends, desires fulfilled through courage, income from engineering/real estate, elder siblings",
+        "12": "Expenses on property, foreign lands for work, bed pleasures, surgery/hospitalization, spiritual warrior, isolation from siblings"
+      },
+      "signs": {
+        "Aries": "Own sign - Maximum energy, pioneering courage, leadership, impulsive, competitive, independent, headstrong",
+        "Taurus": "Steady energy, material courage, practical aggression, property focus, slow anger, persistent effort",
+        "Gemini": "Mental energy, communicative aggression, versatile skills, nervous energy, intellectual competition",
+        "Cancer": "Debilitated - Weak energy, emotional anger, protective courage, domestic conflicts, passive aggression",
+        "Leo": "Powerful energy, dramatic courage, leadership aggression, creative passion, proud warrior spirit",
+        "Virgo": "Analytical energy, perfectionist aggression, technical skills, health warrior, service-oriented courage",
+        "Libra": "Balanced energy, diplomatic aggression, partnership conflicts, artistic passion, indecisive action",
+        "Scorpio": "Own sign - Intense energy, secretive aggression, occult power, transformative courage, deep passion",
+        "Sagittarius": "Expansive energy, righteous aggression, adventurous courage, philosophical action, sporty nature",
+        "Capricorn": "Exalted - Disciplined energy, strategic aggression, ambitious courage, enduring strength, practical action",
+        "Aquarius": "Unconventional energy, humanitarian aggression, scientific courage, detached passion, innovative action",
+        "Pisces": "Diffused energy, compassionate aggression, spiritual courage, passive action, sacrificing nature, artistic passion"
+      }
+    },
+    
+    "Mercury": {
+      "basic_nature": {
+        "element": "Earth",
+        "gender": "Neutral (Eunuch)",
+        "quality": "Benefic when alone, takes nature of conjunct planet",
+        "rules": "Gemini, Virgo",
+        "exalted_in": "Virgo at 15°",
+        "debilitated_in": "Pisces at 15°",
+        "mooltrikona": "Virgo 16-20°",
+        "friendly_planets": ["Sun", "Venus"],
+        "enemy_planets": ["Moon"],
+        "neutral_planets": ["Mars", "Jupiter", "Saturn"],
+        "significations": ["Intelligence", "Communication", "Business", "Education", "Mathematics", "Writing", "Wit", "Skin", "Nervous system"],
+        "body_parts": ["Nervous system", "Skin", "Tongue", "Arms", "Lungs"],
+        "diseases": ["Nervous disorders", "Speech problems", "Skin issues", "Respiratory problems", "Mental instability"],
+        "professions": ["Business", "Accounting", "Teaching", "Writing", "Publishing", "IT", "Communication", "Trading", "Astrology"]
+      },
+      "houses": {
+        "1": "Intelligent, witty, communicative, youthful appearance, business-minded, quick learner, nervous energy, analytical, versatile",
+        "2": "Business income, sweet speech, financial intelligence, teaching in family, accounting skills, multiple income sources, literature",
+        "3": "Excellent for communication, writing abilities, journalism, intelligent siblings, business courage, media success, short travels for trade",
+        "4": "Intelligent mother, education property, multiple vehicles, home business, intellectual domestic life, academic real estate",
+        "5": "Intelligent children, creative writing, speculative intelligence, teaching abilities, education success, mathematical mind, strategic games",
+        "6": "Business conflicts, accounting profession, analytical health, nervous problems, service intelligence, competitive business, detail-oriented work",
+        "7": "Business partnerships, intelligent spouse, communication in marriage, trade success, consultant, youthful partner, commercial agreements",
+        "8": "Occult knowledge, research abilities, analytical mind for mysteries, astrology, inheritance disputes, transformative intelligence, hidden knowledge",
+        "9": "Higher education success, religious knowledge, foreign studies, teaching dharma, publication of philosophy, intelligent father, learning wisdom",
+        "10": "Business career, communication profession, writing/publishing, IT career, teaching, intelligence recognized, versatile profession, calculations",
+        "11": "Business gains, intelligent friends, fulfilled wishes through intellect, network income, writing revenue, elder siblings educated, social media success",
+        "12": "Foreign education, spiritual knowledge, expenses on education, research in isolation, publishing abroad, communication issues, meditation on wisdom"
+      },
+      "signs": {
+        "Aries": "Quick thinking, impulsive communication, pioneering ideas, aggressive intellect, sharp wit, impatient learning",
+        "Taurus": "Practical intelligence, slow but steady learning, material calculations, financial acumen, stubborn opinions",
+        "Gemini": "Own sign - Versatile mind, excellent communication, multiple talents, curious, intellectual, writing skills",
+        "Cancer": "Emotional intelligence, intuitive communication, memory-based learning, nurturing teaching, imaginative writing",
+        "Leo": "Dramatic communication, creative intelligence, authoritative speech, proud intellect, leadership in education",
+        "Virgo": "Exalted - Analytical genius, perfectionist communication, detailed learning, critical thinking, practical intelligence",
+        "Libra": "Diplomatic communication, balanced intellect, artistic thinking, partnership in business, harmonious speech",
+        "Scorpio": "Deep research mind, secretive communication, investigative intelligence, transformative learning, occult knowledge",
+        "Sagittarius": "Philosophical intelligence, expansive communication, religious education, optimistic thinking, teaching wisdom",
+        "Capricorn": "Practical intelligence, disciplined learning, business acumen, strategic communication, ambitious intellect",
+        "Aquarius": "Scientific mind, unconventional communication, innovative intelligence, humanitarian thinking, technology skills",
+        "Pisces": "Debilitated - Scattered thinking, imaginative communication, artistic intelligence, confused speech, intuitive learning"
+      }
+    },
+    
+    "Jupiter": {
+      "basic_nature": {
+        "element": "Ether/Space",
+        "gender": "Male",
+        "quality": "Great Benefic (Maha Subha Graha)",
+        "rules": "Sagittarius, Pisces",
+        "exalted_in": "Cancer at 5°",
+        "debilitated_in": "Capricorn at 5°",
+        "mooltrikona": "Sagittarius 0-10°",
+        "friendly_planets": ["Sun", "Moon", "Mars"],
+        "enemy_planets": ["Mercury", "Venus"],
+        "neutral_planets": ["Saturn"],
+        "significations": ["Wisdom", "Teacher", "Children", "Wealth", "Fortune", "Dharma", "Husband", "Religion", "Higher education", "Expansion"],
+        "body_parts": ["Liver", "Fat tissues", "Hips", "Thighs", "Arterial system"],
+        "diseases": ["Diabetes", "Liver problems", "Obesity", "Cholesterol", "Tumors"],
+        "professions": ["Teaching", "Law", "Banking", "Finance", "Priesthood", "Philosophy", "Advisory", "Higher education"]
+      },
+      "houses": {
+        "1": "Wise, optimistic, fortunate personality, teacher-like, generous, spiritual, good physique, ethical, lucky from birth, philosophical",
+        "2": "Wealth accumulation, wise speech, large family, fortune in finances, banking career, teaching in family, abundant resources, savings",
+        "3": "Wise siblings, religious courage, higher education in communication, fortunate short travels, teaching through writing, dharmic efforts",
+        "4": "Fortunate domestic life, wise mother, multiple properties, vehicles, happy home, higher education, dharmic foundation, comfort",
+        "5": "Blessed children, higher education success, creative wisdom, past merit, spiritual intelligence, teaching abilities, righteous speculation",
+        "6": "Legal profession, victory through wisdom, health wisdom, service to dharma, teaching service, loans repaid, conflicts resolved ethically",
+        "7": "Wise spouse, fortunate marriage, business wisdom, spiritual partnerships, legal career, consulting, beneficial agreements, lucky partner",
+        "8": "Long life, inheritance of wealth, occult wisdom, transformation through dharma, research in philosophy, regeneration, hidden fortune",
+        "9": "Most fortunate placement - wise father, religious, pilgrimage, foreign higher education, dharma strength, teacher blessings, spiritual",
+        "10": "Teaching career, advisory roles, fortunate profession, banking/finance, recognized wisdom, ethical business, prosperity through work",
+        "11": "Abundant gains, wise friends, wishes fulfilled, children successful, income from teaching/finance, elder siblings fortunate, network wealth",
+        "12": "Spiritual wisdom, expenses on dharma, foreign residence for higher learning, charitable, meditation, moksha seeking, divine grace"
+      },
+      "signs": {
+        "Aries": "Dynamic wisdom, pioneering philosophy, aggressive optimism, leadership in teaching, impatient generosity",
+        "Taurus": "Material wisdom, practical philosophy, abundant resources, steady fortune, sensual expansion",
+        "Gemini": "Intellectual wisdom, communicative philosophy, versatile teaching, curious learning, multiple beliefs",
+        "Cancer": "Exalted - Nurturing wisdom, emotional fortune, protective philosophy, motherly teaching, intuitive dharma",
+        "Leo": "Royal wisdom, dramatic philosophy, generous fortune, creative teaching, proud spirituality",
+        "Virgo": "Analytical wisdom, practical philosophy, service teaching, detailed learning, health-conscious expansion",
+        "Libra": "Balanced wisdom, diplomatic philosophy, partnership fortune, artistic teaching, harmonious dharma",
+        "Scorpio": "Deep wisdom, transformative philosophy, intense fortune, research teaching, occult spirituality",
+        "Sagittarius": "Own sign - Natural wisdom, expansive philosophy, lucky fortune, passionate teaching, righteous dharma",
+        "Capricorn": "Debilitated - Restricted wisdom, practical philosophy, limited expansion, disciplined teaching, delayed fortune",
+        "Aquarius": "Humanitarian wisdom, scientific philosophy, unconventional fortune, innovative teaching, universal dharma",
+        "Pisces": "Own sign - Spiritual wisdom, compassionate philosophy, mystical fortune, intuitive teaching, transcendent dharma"
+      }
+    },
+    
+    "Venus": {
+      "basic_nature": {
+        "element": "Water",
+        "gender": "Female",
+        "quality": "Benefic (Subha Graha)",
+        "rules": "Taurus, Libra",
+        "exalted_in": "Pisces at 27°",
+        "debilitated_in": "Virgo at 27°",
+        "mooltrikona": "Libra 0-15°",
+        "friendly_planets": ["Mercury", "Saturn"],
+        "enemy_planets": ["Sun", "Moon"],
+        "neutral_planets": ["Mars", "Jupiter"],
+        "significations": ["Love", "Marriage", "Luxury", "Art", "Beauty", "Vehicles", "Wife", "Sensual pleasures", "Creativity", "Wealth"],
+        "body_parts": ["Reproductive organs", "Kidneys", "Face", "Eyes", "Throat"],
+        "diseases": ["Sexual disorders", "Kidney problems", "Diabetes", "Eye issues", "Skin diseases"],
+        "professions": ["Arts", "Entertainment", "Fashion", "Jewelry", "Hotels", "Beauty industry", "Diplomacy", "Interior design"]
+      },
+      "houses": {
+        "1": "Attractive, artistic, charming personality, love for luxury, diplomatic, sensual, beautiful features, creative, romantic nature",
+        "2": "Wealth through arts, sweet speech, beautiful family, luxury possessions, jewelry collection, singing ability, abundant finances",
+        "3": "Artistic communication, creative writing, beautiful siblings, love for travel, arts media, diplomatic courage, harmonious self-effort",
+        "4": "Beautiful home, artistic mother, luxury vehicles, comfortable domestic life, interior design, pleasant childhood, refined education",
+        "5": "Creative children, artistic talents, romantic love, entertainment success, past life artistic merit, beautiful speculation, music",
+        "6": "Relationship conflicts, service in arts, beauty/health industry, luxury diseases (diabetes), diplomatic service, pleasant work environment",
+        "7": "Beautiful spouse, harmonious marriage, artistic partnerships, successful business, diplomacy career, balanced relationships, luxury trade",
+        "8": "Artistic transformation, inheritance of luxury, occult beauty, sensual depths, regeneration through relationships, hidden wealth",
+        "9": "Fortune through arts, religious beauty, higher artistic education, beautiful philosophy, foreign luxury, creative dharma, fortunate marriage",
+        "10": "Artistic career, entertainment profession, luxury business, diplomatic work, beauty industry, recognized creativity, pleasant superiors",
+        "11": "Gains through arts/luxury, beautiful friends, wishes for love fulfilled, income from creativity, elder siblings artistic, social success",
+        "12": "Expenses on luxury, foreign relationships, spiritual beauty, bedroom pleasures, artistic isolation, charitable to arts, divine love"
+      },
+      "signs": {
+        "Aries": "Passionate love, impulsive romance, aggressive beauty, pioneering creativity, quick attractions, athletic aesthetics",
+        "Taurus": "Own sign - Sensual love, material luxury, stable romance, artistic beauty, refined taste, pleasure-seeking",
+        "Gemini": "Intellectual love, communicative romance, versatile creativity, youthful beauty, multiple attractions, artistic writing",
+        "Cancer": "Nurturing love, emotional romance, domestic beauty, caring creativity, intuitive aesthetics, motherly sensuality",
+        "Leo": "Dramatic love, royal romance, creative beauty, attention-seeking, generous affection, theatrical arts",
+        "Virgo": "Debilitated - Critical love, practical romance, service beauty, analytical creativity, perfectionist aesthetics, health-conscious luxury",
+        "Libra": "Own sign - Harmonious love, balanced romance, refined beauty, diplomatic creativity, partnership-oriented, classical arts",
+        "Scorpio": "Intense love, passionate romance, mysterious beauty, transformative creativity, magnetic sensuality, deep arts",
+        "Sagittarius": "Adventurous love, philosophical romance, exotic beauty, expansive creativity, optimistic affection, foreign arts",
+        "Capricorn": "Practical love, mature romance, classic beauty, disciplined creativity, enduring affection, traditional arts",
+        "Aquarius": "Unconventional love, detached romance, unique beauty, innovative creativity, friendly affection, modern arts",
+        "Pisces": "Exalted - Spiritual love, dreamy romance, transcendent beauty, imaginative creativity, compassionate affection, divine arts"
+      }
+    },
+    
+    "Saturn": {
+      "basic_nature": {
+        "element": "Air",
+        "gender": "Neutral (Eunuch)",
+        "quality": "Great Malefic (Maha Papa Graha)",
+        "rules": "Capricorn, Aquarius",
+        "exalted_in": "Libra at 20°",
+        "debilitated_in": "Aries at 20°",
+        "mooltrikona": "Aquarius 0-20°",
+        "friendly_planets": ["Mercury", "Venus"],
+        "enemy_planets": ["Sun", "Moon", "Mars"],
+        "neutral_planets": ["Jupiter"],
+        "significations": ["Karma", "Discipline", "Delays", "Longevity", "Servant", "Labor", "Death", "Chronic disease", "Detachment", "Renunciation"],
+        "body_parts": ["Bones", "Teeth", "Knees", "Joints", "Spleen"],
+        "diseases": ["Arthritis", "Bone issues", "Chronic ailments", "Paralysis", "Depression", "Skin diseases"],
+        "professions": ["Labor", "Mining", "Iron/steel", "Law enforcement", "Judiciary", "Agriculture", "Longevity research", "Ancient sciences"]
+      },
+      "houses": {
+        "1": "Serious personality, disciplined, introverted, karmic life, delays in achievements, perseverance, old soul, responsible, mature early",
+        "2": "Delayed wealth, disciplined savings, slow speech, restricted family, karmic finances, income through labor, conservative resources",
+        "3": "Delayed success in efforts, hardworking, perseverant courage, disciplined siblings, laborious communication, slow but steady writing",
+        "4": "Property delays, mother's hardships, old/ancestral property, disciplined education, karmic domestic life, delayed comforts, farming",
+        "5": "Delayed children, serious offspring, disciplined creativity, karmic speculation, traditional education, cautious romance, research abilities",
+        "6": "Victory through perseverance, chronic health, service work, disciplined enemies, legal profession, slow healing, healthcare work",
+        "7": "Delayed marriage, older spouse, karmic partnerships, serious relationships, business delays, responsible partner, long-term commitments",
+        "8": "Longevity, chronic ailments, transformation through hardship, inheritance delays, occult/tantra, karmic debts, research depth, death studies",
+        "9": "Delayed fortune, karmic dharma, serious father, traditional religion, discipline in spirituality, slow higher education, ancient wisdom",
+        "10": "Successful career (best placement), disciplined work, slow rise to top, karmic profession, authority through perseverance, public service",
+        "11": "Delayed gains, disciplined networking, older influential friends, steady income growth, karmic fulfillment, elder siblings serious, persistent goals",
+        "12": "Spiritual discipline, karmic expenses, foreign labor, meditation mastery, isolation, charitable work, moksha seeking, ascetic tendencies"
+      },
+      "signs": {
+        "Aries": "Debilitated - Frustrated discipline, impulsive delays, aggressive karma, pioneering restrictions, impatient perseverance",
+        "Taurus": "Practical discipline, material karma, stable delays, enduring perseverance, cautious sensuality",
+        "Gemini": "Mental discipline, communicative karma, intellectual delays, versatile perseverance, structured learning",
+        "Cancer": "Emotional discipline, nurturing karma, domestic delays, protective perseverance, mother's hardships",
+        "Leo": "Ego discipline, creative karma, leadership delays, proud perseverance, authority through struggle",
+        "Virgo": "Analytical discipline, service karma, health delays, perfectionist perseverance, detailed hard work",
+        "Libra": "Exalted - Balanced discipline, partnership karma, harmonious delays, diplomatic perseverance, just authority",
+        "Scorpio": "Intense discipline, transformative karma, deep delays, secretive perseverance, occult mastery",
+        "Sagittarius": "Philosophical discipline, religious karma, wisdom delays, optimistic perseverance, traditional teaching",
+        "Capricorn": "Own sign - Natural discipline, structured karma, professional delays, ambitious perseverance, peak authority",
+        "Aquarius": "Own sign - Humanitarian discipline, social karma, unconventional delays, detached perseverance, scientific structure",
+        "Pisces": "Spiritual discipline, compassionate karma, mystical delays, sacrificing perseverance, transcendent patience"
+      }
+    },
+    
+    "Rahu": {
+      "basic_nature": {
+        "element": "Air",
+        "gender": "Female",
+        "quality": "Shadow Planet - Malefic",
+        "co_rules": "Aquarius (according to some)",
+        "exalted_in": "Taurus/Gemini (varies by tradition)",
+        "debilitated_in": "Scorpio/Sagittarius (varies)",
+        "significations": ["Obsession", "Materialism", "Foreign", "Technology", "Unconventional", "Illusion", "Sudden events", "Paternal grandfather"],
+        "body_parts": ["Skin", "Mental nerves"],
+        "diseases": ["Skin diseases", "Mental disorders", "Addictions", "Phobias", "Cancer"],
+        "professions": ["IT", "Foreign business", "Photography", "Cinema", "Unconventional fields", "Politics", "Imports"]
+      },
+      "houses": {
+        "1": "Unconventional personality, foreign influences, obsessive nature, materialistic, innovative, sudden changes, may face identity confusion",
+        "2": "Unconventional wealth, foreign income, speech issues, non-traditional family, technology income, sudden financial changes",
+        "3": "Courage for unconventional, foreign communications, media success, bold siblings, innovative writing, sudden short travels",
+        "4": "Foreign property, unconventional education, mother's foreign connection, technology at home, sudden domestic changes",
+        "5": "Unconventional children, foreign romance, creative innovation, risky speculation, non-traditional education, sudden romantic changes",
+        "6": "Victory through unconventional means, foreign enemies, technology service, skin diseases, innovative health approaches",
+        "7": "Foreign spouse, unconventional marriage, business abroad, sudden partnership changes, technology partnerships, inter-caste marriage",
+        "8": "Occult obsession, sudden transformations, foreign inheritance, research abilities, technology mysteries, unexpected longevity",
+        "9": "Foreign higher education, unconventional religion, materialistic philosophy, sudden fortune, innovative dharma, foreign father",
+        "10": "Foreign career, technology profession, unconventional success, political ambitions, innovative work, sudden career changes",
+        "11": "Gains from foreign/technology, unconventional friends, materialistic wishes, sudden income, innovative networking, elder sibling abroad",
+        "12": "Foreign residence, spiritual materialism, expenses abroad, isolation in foreign lands, unconventional meditation, technology expenses"
+      }
+    },
+    
+    "Ketu": {
+      "basic_nature": {
+        "element": "Fire",
+        "gender": "Neutral",
+        "quality": "Shadow Planet - Spiritual Malefic",
+        "co_rules": "Scorpio (according to some)",
+        "exalted_in": "Sagittarius/Scorpio (varies)",
+        "debilitated_in": "Gemini/Taurus (varies)",
+        "significations": ["Spirituality", "Detachment", "Past life", "Moksha", "Occult", "Research", "Intuition", "Sudden losses", "Maternal grandfather"],
+        "body_parts": ["Abdomen", "Intestines"],
+        "diseases": ["Intestinal issues", "Mysterious ailments", "Allergies", "Psychic disturbances"],
+        "professions": ["Spirituality", "Occult", "Research", "Medicine", "Investigation", "Philosophy", "Ancient sciences"]
+      },
+      "houses": {
+        "1": "Spiritual seeker, detached personality, intuitive, past life influences strong, mysterious aura, psychic abilities, identity confusion",
+        "2": "Detached from wealth, spiritual family, past life resources, intuitive speech, fluctuating finances, charitable nature",
+        "3": "Spiritual courage, detached siblings, intuitive communication, past life efforts, occult writing, mysterious short travels",
+        "4": "Spiritual mother, detached from property, past life domestic karma, intuitive education, ancestral home importance, meditation space",
+        "5": "Spiritual children, detached romance, past life creative karma, intuitive intelligence, research education, spiritual speculation",
+        "6": "Healing abilities, spiritual service, detached from enemies, intuitive health, mysterious diseases, alternative medicine, occult remedies",
+        "7": "Spiritual spouse, detached marriage, past life partnership karma, intuitive business, mysterious partner, moksha in relationships",
+        "8": "Strong occult abilities, past life karma visible, spiritual transformation, intuitive research, mysterious inheritance, moksha seeking",
+        "9": "Highly spiritual, detached from materialism, past life dharma, intuitive wisdom, mysterious fortune, enlightenment seeking, spiritual father",
+        "10": "Spiritual career, research profession, detached from fame, intuitive work, occult profession, past life professional karma",
+        "11": "Detached from gains, spiritual friends, intuitive networking, past life social karma, mysterious income, charitable elder siblings",
+        "12": "Strong moksha placement, spiritual isolation, past life completion, intuitive meditation, mysterious foreign lands, enlightenment possible"
+      }
+    }
+  },
+  
+  "house_significations": {
+    "1": ["Self", "Personality", "Physical body", "Head", "Birth", "Beginning", "Life path", "Appearance", "Vitality"],
+    "2": ["Wealth", "Family", "Speech", "Food", "Face", "Eyes", "Early childhood", "Values", "Possessions"],
+    "3": ["Courage", "Siblings", "Communication", "Short travels", "Hands", "Efforts", "Skills", "Media", "Neighbors"],
+    "4": ["Mother", "Home", "Property", "Vehicles", "Education", "Chest/Heart", "Domestic peace", "Roots", "Comfort"],
+    "5": ["Children", "Intelligence", "Creativity", "Romance", "Speculation", "Past life merit", "Stomach", "Mantras"],
+    "6": ["Enemies", "Diseases", "Debts", "Service", "Maternal uncle", "Obstacles", "Competition", "Daily work"],
+    "7": ["Spouse", "Marriage", "Partnerships", "Business", "Travel", "Death", "Public relations", "Agreements"],
+    "8": ["Longevity", "Death", "Transformation", "Occult", "Inheritance", "Chronic disease", "Research", "Mysteries"],
+    "9": ["Fortune", "Father", "Dharma", "Higher education", "Long journeys", "Teachers", "Religion", "Luck", "Wisdom"],
+    "10": ["Career", "Fame", "Father", "Authority", "Profession", "Recognition", "Public image", "Government"],
+    "11": ["Gains", "Income", "Friends", "Elder siblings", "Wishes", "Fulfillment", "Achievements", "Social circle"],
+    "12": ["Losses", "Expenses", "Foreign lands", "Moksha", "Isolation", "Bed pleasures", "Hospitals", "Spirituality"]
+  },
+  
+  "aspect_meanings": {
+    "conjunction": "Planets merge energies, strongest influence, combined effects",
+    "opposition": "Planets oppose, creates tension, balance needed, full awareness",
+    "trine": "Harmonious flow, easy manifestation, natural talents, support",
+    "square": "Tension, obstacles, growth through challenge, action required",
+    "sextile": "Opportunity, cooperation, potential to develop, conscious effort"
+  },
+  
+  "dignity_effects": {
+    "exalted": "Planet at maximum strength, optimal functioning, excellent results, natural expression",
+    "own_sign": "Planet comfortable, good strength, positive results, authentic expression",
+    "mooltrikona": "Planet very strong, consistent results, favorable outcomes, reliable",
+    "friendly_sign": "Planet supported, moderate strength, helpful results, cooperative",
+    "neutral_sign": "Planet balanced, variable strength, mixed results, adaptable",
+    "enemy_sign": "Planet challenged, reduced strength, difficult results, conflicted",
+    "debilitated": "Planet weakest, restricted functioning, challenges, need for remedies, growth opportunity"
+  }
+}

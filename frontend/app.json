@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "ZodiacAI",
+    "slug": "zodiac-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icons/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/assets/icons/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6C3FB5"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.astroai.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/icons/adaptive-icon.png",
+        "backgroundColor": "#6C3FB5"
+      },
+      "package": "com.astroai.app"
+    },
+    "web": {
+      "favicon": "./src/assets/icons/favicon.png"
+    }
+  }
+}
