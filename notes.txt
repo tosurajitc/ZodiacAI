@@ -29,5 +29,6 @@ Firebase Project: zodiacai-4d885
 
 git init
 git add .
+git commit -m "2nd commit"
 git push -u origin master
 Github: https://github.com/tosurajitc/ZodiacAI.git    

@@ -128,6 +128,12 @@ export default function BirthDetailsScreen({ navigation }) {
       });
 
       const data = await response.json();
+      // TEMPORARY DEBUG - Remove after
+      console.log('=== COMPLETE DATA STRUCTURE ===');
+      console.log('birthDetails:', JSON.stringify(data.data.birthDetails, null, 2));
+      console.log('planetaryPositions:', JSON.stringify(data.data.planetaryPositions, null, 2));
+      console.log('houses:', JSON.stringify(data.data.houses, null, 2));
+      console.log('dashas:', JSON.stringify(data.data.dashas, null, 2));
       console.log('📋 Backend response:', JSON.stringify(data, null, 2));
 
       if (!response.ok) {

@@ -61,47 +61,63 @@ export default function KundliViewScreen({ navigation, route }) {
     }
   };
 
-  // Extract planetary positions from backend structure
+  // Extract planetary positions from backend planetaryPositions object
   const getPlanetaryPositions = () => {
-    if (!kundliData?.planetaryPositions) return [];
+    if (!kundliData?.planetaryPositions) {
+      console.warn('No planetaryPositions found');
+      return [];
+    }
     
     const planets = [];
     Object.entries(kundliData.planetaryPositions).forEach(([planetName, planetData]) => {
       if (planetData && typeof planetData === 'object') {
+        // Find which house this planet is in from the houses array
+        let houseNum = 'N/A';
+        if (kundliData?.houses && Array.isArray(kundliData.houses)) {
+          const planetHouse = kundliData.houses.find(house => {
+            if (house.planets_in_house && Array.isArray(house.planets_in_house)) {
+              return house.planets_in_house.some(p => p.name === planetName);
+            }
+            return false;
+          });
+          if (planetHouse) {
+            houseNum = planetHouse.house_number;
+          }
+        }
+
         planets.push({
           name: planetName,
           sign: planetData.sign || 'N/A',
           degree: planetData.degree ? `${planetData.degree.toFixed(2)}°` : 'N/A',
-          house: planetData.house || 'N/A',
-          nakshatra: planetData.nakshatra?.formatted || planetData.nakshatra?.nakshatra || 'N/A',
-          retrograde: planetData.retrograde || false
+          house: houseNum,
+          nakshatra: planetData.nakshatra?.formatted || 'N/A',
+          retrograde: planetData.is_retrograde || false
         });
       }
     });
     return planets;
   };
 
-  // Extract Sun sign
+  // Extract Sun sign from kundli.Sun.D1.sign
   const getSunSign = () => {
-    if (!kundliData?.kundli?.Sun?.D1) return 'N/A';
-    return kundliData.kundli.Sun.D1.sign || 'N/A';
+    return kundliData?.kundli?.Sun?.D1?.sign || 'N/A';
   };
 
-  // Extract Moon sign
+  // Extract Moon sign from kundli.Moon.D1.sign
   const getMoonSign = () => {
-    if (!kundliData?.kundli?.Moon?.D1) return 'N/A';
-    return kundliData.kundli.Moon.D1.sign || 'N/A';
+    return kundliData?.kundli?.Moon?.D1?.sign || 'N/A';
   };
 
-  // Extract Ascendant from houses
+  // Extract Ascendant from houses[0].sign_in_house (1st house sign)
   const getAscendant = () => {
     if (!kundliData?.houses || !Array.isArray(kundliData.houses)) return 'N/A';
-    const firstHouse = kundliData.houses.find(h => h.house === 1);
-    return firstHouse?.sign || 'N/A';
+    
+    const firstHouse = kundliData.houses.find(h => h.house_number === 1);
+    return firstHouse?.sign_in_house || 'N/A';
   };
 
   const handleDownloadPDF = async () => {
-    console.log('🔥 PDF Download initiated');
+    console.log('📥 PDF Download initiated');
     
     if (!kundliData?.id) {
       Alert.alert('Error', 'No Kundli data available');
@@ -195,6 +211,12 @@ export default function KundliViewScreen({ navigation, route }) {
   const moonSign = getMoonSign();
   const ascendant = getAscendant();
 
+  // Extract birth details from birthDetails object (correct paths from console log)
+  const birthName = kundliData?.birthDetails?.name || userName || 'N/A';
+  const birthDate = kundliData?.birthDetails?.birth_date || 'N/A';
+  const birthTime = kundliData?.birthDetails?.birth_time || 'N/A';
+  const birthPlace = kundliData?.birthDetails?.birth_place || 'N/A';
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -226,22 +248,22 @@ export default function KundliViewScreen({ navigation, route }) {
             <DetailRow 
               icon="account" 
               label="Name" 
-              value={kundliData.birthDetails?.name || userName || 'N/A'} 
+              value={birthName} 
             />
             <DetailRow 
               icon="calendar" 
               label="Date" 
-              value={kundliData.birthDetails?.dateOfBirth || 'N/A'} 
+              value={birthDate} 
             />
             <DetailRow 
               icon="clock-outline" 
               label="Time" 
-              value={kundliData.birthDetails?.timeOfBirth || 'N/A'} 
+              value={birthTime} 
             />
             <DetailRow 
               icon="map-marker" 
               label="Place" 
-              value={kundliData.birthDetails?.placeOfBirth || 'N/A'} 
+              value={birthPlace} 
             />
           </Card.Content>
         </Card>
@@ -321,13 +343,13 @@ export default function KundliViewScreen({ navigation, route }) {
                 <View style={styles.dashaRow}>
                   <Text style={styles.dashaLabel}>Mahadasha:</Text>
                   <Chip style={styles.dashaChip}>
-                    {kundliData.dashas.current.mahadasha?.planet || 'N/A'}
+                    {kundliData.dashas.current.mahadasha?.lord || 'N/A'}
                   </Chip>
                 </View>
                 <View style={styles.dashaRow}>
                   <Text style={styles.dashaLabel}>Antardasha:</Text>
                   <Chip style={styles.dashaChip}>
-                    {kundliData.dashas.current.antardasha?.planet || 'N/A'}
+                    {kundliData.dashas.current.antardasha?.antardasha_lord || 'N/A'}
                   </Chip>
                 </View>
                 {kundliData.dashas.current.mahadasha?.start_date && (
@@ -398,7 +420,9 @@ function PlanetRow({ planet }) {
   return (
     <View style={styles.planetRow}>
       <View style={styles.planetInfo}>
-        <Text style={styles.planetName}>{planet.name}</Text>
+        <Text style={styles.planetName}>
+          {planet.name}{planet.retrograde ? ' ®' : ''}
+        </Text>
         <Text style={styles.planetDetails}>
           {planet.sign} • House {planet.house} • {planet.nakshatra}
         </Text>
@@ -410,33 +434,37 @@ function PlanetRow({ planet }) {
 
 function RasiChart({ planets, houses }) {
   const houseNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const signs = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis'];
   
-  // Group planets by house
+  // Group planets by house using houses array data
   const planetsByHouse = {};
-  planets.forEach(planet => {
-    const house = planet.house;
-    if (!planetsByHouse[house]) {
-      planetsByHouse[house] = [];
-    }
-    planetsByHouse[house].push(planet.name.substring(0, 3));
-  });
+  
+  if (Array.isArray(houses)) {
+    houses.forEach(house => {
+      if (house.planets_in_house && Array.isArray(house.planets_in_house)) {
+        planetsByHouse[house.house_number] = house.planets_in_house.map(p => 
+          p.name.substring(0, 3)
+        );
+      }
+    });
+  }
 
   return (
     <Svg width={CHART_SIZE} height={CHART_SIZE}>
-      {houseNumbers.map((house, index) => {
+      {houseNumbers.map((houseNum, index) => {
         const row = Math.floor(index / 3);
         const col = index % 3;
         const cellSize = CHART_SIZE / 3;
         const x = col * cellSize;
         const y = row * cellSize;
 
-        // Get sign for this house
-        const houseData = houses.find(h => h.house === house);
-        const sign = houseData?.sign || signs[house - 1];
+        // Get sign for this house from houses array
+        const houseData = Array.isArray(houses) 
+          ? houses.find(h => h.house_number === houseNum)
+          : null;
+        const sign = houseData?.sign_in_house || 'N/A';
 
         return (
-          <G key={house}>
+          <G key={houseNum}>
             {/* House borders */}
             <Line x1={x} y1={y} x2={x + cellSize} y2={y} stroke="#E0E0E0" strokeWidth="2" />
             <Line x1={x + cellSize} y1={y} x2={x + cellSize} y2={y + cellSize} stroke="#E0E0E0" strokeWidth="2" />
@@ -445,25 +473,25 @@ function RasiChart({ planets, houses }) {
 
             {/* House number */}
             <SvgText x={x + 10} y={y + 20} fontSize="12" fill="#7F8C8D" fontWeight="bold">
-              {house}
+              {houseNum}
             </SvgText>
 
             {/* Sign */}
             <SvgText x={x + cellSize - 35} y={y + 20} fontSize="11" fill="#6C3FB5">
-              {sign}
+              {sign.substring(0, 3)}
             </SvgText>
 
             {/* Planets */}
-            {planetsByHouse[house] && (
+            {planetsByHouse[houseNum] && planetsByHouse[houseNum].length > 0 && (
               <SvgText
                 x={x + cellSize / 2}
                 y={y + cellSize / 2 + 5}
-                fontSize="13"
+                fontSize="11"
                 fill="#2C3E50"
                 fontWeight="bold"
                 textAnchor="middle"
               >
-                {planetsByHouse[house].join(', ')}
+                {planetsByHouse[houseNum].join(', ')}
               </SvgText>
             )}
           </G>
