@@ -1,9 +1,8 @@
 // backend/functions/files/src/controllers/kundliController.js
-// Kundli Generation & Management Controller for AstroAI Backend
-
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const logger = require('../utils/logger');
+const pythonEngine = require('../services/pythonEngineService');
 const {
   successResponse,
   createdResponse,
@@ -13,18 +12,13 @@ const {
   errorResponse,
 } = require('../utils/apiResponse');
 const { asyncHandler } = require('../utils/errorHandler');
-const { BirthDetails } = require('../models');
+const { BirthDetails, User } = require('../models');
 
 /**
  * @desc    Generate new kundli from birth details
  * @route   POST /api/kundli/generate
  * @access  Private
  */
-
-// Replace the generateKundli function in kundliController.js
-// Location: backend/functions/files/src/controllers/kundliController.js
-// Replace lines 23-239 with this:
-
 const generateKundli = asyncHandler(async (req, res) => {
   const { name, dateOfBirth, timeOfBirth, placeOfBirth, latitude, longitude, timezone } = req.body;
   const userId = req.user.id;
@@ -32,77 +26,66 @@ const generateKundli = asyncHandler(async (req, res) => {
   logger.info('Generating comprehensive kundli', { userId, name });
 
   try {
-      // Geocode location if coordinates not provided
-      let finalLat = latitude;
-      let finalLon = longitude;
-      
-      if (!latitude || !longitude) {
-        const geoResponse = await axios.get(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeOfBirth)}`,
-          {
-            headers: {
-              'User-Agent': 'AstroAI/1.0 (astrology-app)'
-            }
-          }
-        );
-        
-        if (geoResponse.data && geoResponse.data.length > 0) {
-          finalLat = parseFloat(geoResponse.data[0].lat);
-          finalLon = parseFloat(geoResponse.data[0].lon);
-        } else {
-          return errorResponse(res, 'Unable to find location coordinates', 400);
-        }
-      }
-
-      // Call Python engine
-      const pythonApiUrl = process.env.PYTHON_ENGINE_URL || 'http://localhost:8000';
-      const apiKey = process.env.PYTHON_ENGINE_API_KEY || 'your-python-engine-api-key';
-
-      const response = await axios.post(
-        `${pythonApiUrl}/api/kundli/comprehensive`,
-        null,
+    let finalLat = latitude;
+    let finalLon = longitude;
+    
+    // Geocode location if coordinates not provided
+    if (!latitude || !longitude) {
+      const geoResponse = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeOfBirth)}`,
         {
-          params: {
-            birth_date: typeof dateOfBirth === 'string' ? dateOfBirth.split('T')[0] : dateOfBirth.toISOString().split('T')[0],
-            birth_time: timeOfBirth.substring(0, 5),
-            latitude: finalLat,
-            longitude: finalLon,
-            timezone: timezone || 5.5,
-            name: name,
-            place: placeOfBirth
-          },
           headers: {
-            'X-API-Key': apiKey
+            'User-Agent': 'AstroAI/1.0 (astrology-app)'
           }
         }
       );
+      
+      if (geoResponse.data && geoResponse.data.length > 0) {
+        finalLat = parseFloat(geoResponse.data[0].lat);
+        finalLon = parseFloat(geoResponse.data[0].lon);
+      } else {
+        return errorResponse(res, 'Unable to find location coordinates', 400);
+      }
+    }
 
-    const kundliData = response.data.data;
+    // Call Python engine using service
+    const birthData = {
+      birthDate: typeof dateOfBirth === 'string' ? dateOfBirth.split('T')[0] : dateOfBirth.toISOString().split('T')[0],
+      birthTime: timeOfBirth.substring(0, 5),
+      latitude: finalLat,
+      longitude: finalLon,
+      timezone: timezone || 5.5,
+      name: name,
+      place: placeOfBirth
+    };
 
-    // Create kundli ID
-    const kundliId = uuidv4();
+    const result = await pythonEngine.generateComprehensiveKundli(birthData);
+
+    if (!result.success) {
+      return errorResponse(res, 'Failed to generate kundli from Python engine', 500);
+    }
+
+    const kundliData = result.data;
 
     // Ensure user exists
-    const { User } = require('../models');
     await User.findOrCreate({
       where: { id: userId },
       defaults: {
         id: userId,
         email: req.user.email || 'unknown@email.com',
-        name: name
+        full_name: name
       }
     });
 
-    // Save to database
-    await BirthDetails.create({
-      id: kundliId,
+    // Save or update birth details
+    const [birthDetailsRecord, created] = await BirthDetails.upsert({
       user_id: userId,
       name: name,
       birth_date: dateOfBirth,
       birth_time: timeOfBirth,
       birth_location: placeOfBirth,
-      latitude: latitude,
-      longitude: longitude,
+      latitude: finalLat,
+      longitude: finalLon,
       timezone: timezone || 5.5,
       rasi_chart: kundliData.shodashvarga_table,
       navamsa_chart: kundliData.shodashvarga_table,
@@ -113,30 +96,33 @@ const generateKundli = asyncHandler(async (req, res) => {
       shodashvarga_table: kundliData.shodashvarga_table,
       house_analysis: kundliData.house_analysis,
       chart_generated_at: new Date(),
+    }, {
+      conflictFields: ['user_id']
     });
+    
+    logger.info(created ? 'New birth details created' : 'Birth details updated', { userId, kundliId: birthDetailsRecord.id });
 
-    logger.info('Comprehensive kundli saved', { userId, kundliId });
-
-    return kundliResponse(res, 'Comprehensive kundli generated successfully', {
-      id: kundliId,
+    return kundliResponse(res, created ? 'Kundli generated successfully' : 'Kundli updated successfully', {
+      id: birthDetailsRecord.id,
       kundli: kundliData.shodashvarga_table,
       birthDetails: {
         name: name,
-        dateOfBirth: typeof dateOfBirth === 'string' ? dateOfBirth.split('T')[0] : dateOfBirth.toISOString().split('T')[0],
+        dateOfBirth: birthData.birthDate,
         timeOfBirth: timeOfBirth,
         placeOfBirth: placeOfBirth
       },
       planetaryPositions: kundliData.planetary_positions,
       houses: kundliData.house_analysis,
       dashas: kundliData.dasha,
-      generatedAt: new Date().toISOString()
+      generatedAt: new Date().toISOString(),
+      isUpdate: !created
     });
 
   } catch (error) {
     logger.error('Kundli generation failed', { 
       error: error.message,
       userId,
-      pythonEngineError: error.response?.data 
+      stack: error.stack
     });
 
     if (error.response?.status === 401) {
@@ -155,18 +141,42 @@ const generateKundli = asyncHandler(async (req, res) => {
 const getUserKundli = asyncHandler(async (req, res) => {
   const userId = req.user.id;
 
-  const kundli = {
-    id: uuidv4(),
-    userId,
-    birthDetails: {
-      dateOfBirth: '1990-05-15',
-      timeOfBirth: '14:30',
-      placeOfBirth: 'Mumbai, India',
-    },
-    createdAt: new Date(),
-  };
+  try {
+    // Fetch birth details from database
+    const birthDetails = await BirthDetails.findOne({ 
+      where: { user_id: userId }
+    });
 
-  return successResponse(res, 'Kundli retrieved', kundli);
+    if (!birthDetails) {
+      return successResponse(res, 'No kundli found. Please generate your kundli first.', null);
+    }
+
+    // Return kundli data from database
+    const kundliData = {
+      id: birthDetails.id,
+      birthDetails: {
+        name: birthDetails.name,
+        birth_date: birthDetails.birth_date,
+        birth_time: birthDetails.birth_time,
+        birth_location: birthDetails.birth_location,
+      },
+      kundli: birthDetails.shodashvarga_table,
+      planetaryPositions: birthDetails.planetary_positions,
+      houses: birthDetails.house_analysis,
+      dashas: {
+        current: birthDetails.current_dasha,
+        complete_timeline: birthDetails.vimshottari_dasha
+      },
+      createdAt: birthDetails.chart_generated_at || birthDetails.created_at,
+    };
+
+    logger.info('Kundli retrieved from database', { userId });
+    return successResponse(res, 'Kundli retrieved', kundliData);
+
+  } catch (error) {
+    logger.error('Error fetching kundli', { error: error.message, userId });
+    return errorResponse(res, 'Failed to fetch kundli', 500);
+  }
 });
 
 /**
@@ -175,7 +185,41 @@ const getUserKundli = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getKundliById = asyncHandler(async (req, res) => {
-  return notFoundResponse(res, 'Kundli');
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    const kundliData = {
+      id: birthDetails.id,
+      birthDetails: {
+        name: birthDetails.name,
+        birth_date: birthDetails.birth_date,
+        birth_time: birthDetails.birth_time,
+        birth_location: birthDetails.birth_location,
+      },
+      kundli: birthDetails.shodashvarga_table,
+      planetaryPositions: birthDetails.planetary_positions,
+      houses: birthDetails.house_analysis,
+      dashas: {
+        current: birthDetails.current_dasha,
+        complete_timeline: birthDetails.vimshottari_dasha
+      },
+      createdAt: birthDetails.chart_generated_at || birthDetails.created_at,
+    };
+
+    return successResponse(res, 'Kundli retrieved', kundliData);
+  } catch (error) {
+    logger.error('Error fetching kundli by ID', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch kundli', 500);
+  }
 });
 
 /**
@@ -186,10 +230,75 @@ const getKundliById = asyncHandler(async (req, res) => {
 const updateKundli = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
+  const { name, dateOfBirth, timeOfBirth, placeOfBirth, latitude, longitude, timezone } = req.body;
 
-  logger.info('Kundli updated', { userId, kundliId: id });
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
 
-  return successResponse(res, 'Kundli updated successfully');
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    // Regenerate kundli with new details
+    const birthData = {
+      birthDate: typeof dateOfBirth === 'string' ? dateOfBirth.split('T')[0] : dateOfBirth.toISOString().split('T')[0],
+      birthTime: timeOfBirth.substring(0, 5),
+      latitude: latitude || birthDetails.latitude,
+      longitude: longitude || birthDetails.longitude,
+      timezone: timezone || birthDetails.timezone,
+      name: name || birthDetails.name,
+      place: placeOfBirth || birthDetails.birth_location
+    };
+
+    const result = await pythonEngine.generateComprehensiveKundli(birthData);
+
+    if (!result.success) {
+      return errorResponse(res, 'Failed to regenerate kundli', 500);
+    }
+
+    const kundliData = result.data;
+
+    // Update birth details
+    await birthDetails.update({
+      name: name || birthDetails.name,
+      birth_date: dateOfBirth || birthDetails.birth_date,
+      birth_time: timeOfBirth || birthDetails.birth_time,
+      birth_location: placeOfBirth || birthDetails.birth_location,
+      latitude: latitude || birthDetails.latitude,
+      longitude: longitude || birthDetails.longitude,
+      timezone: timezone || birthDetails.timezone,
+      rasi_chart: kundliData.shodashvarga_table,
+      navamsa_chart: kundliData.shodashvarga_table,
+      planetary_positions: kundliData.planetary_positions,
+      house_cusps: kundliData.house_analysis,
+      current_dasha: kundliData.dasha.current,
+      vimshottari_dasha: kundliData.dasha.complete_timeline,
+      shodashvarga_table: kundliData.shodashvarga_table,
+      house_analysis: kundliData.house_analysis,
+      chart_generated_at: new Date(),
+    });
+
+    logger.info('Kundli updated', { userId, kundliId: id });
+
+    return successResponse(res, 'Kundli updated successfully', {
+      id: birthDetails.id,
+      kundli: kundliData.shodashvarga_table,
+      birthDetails: {
+        name: birthDetails.name,
+        dateOfBirth: birthDetails.birth_date,
+        timeOfBirth: birthDetails.birth_time,
+        placeOfBirth: birthDetails.birth_location
+      },
+      planetaryPositions: kundliData.planetary_positions,
+      houses: kundliData.house_analysis,
+      dashas: kundliData.dasha,
+    });
+  } catch (error) {
+    logger.error('Kundli update failed', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to update kundli', 500);
+  }
 });
 
 /**
@@ -201,9 +310,24 @@ const deleteKundli = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
 
-  logger.info('Kundli deleted', { userId, kundliId: id });
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
 
-  return successResponse(res, 'Kundli deleted successfully');
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    await birthDetails.destroy();
+    
+    logger.info('Kundli deleted', { userId, kundliId: id });
+
+    return successResponse(res, 'Kundli deleted successfully');
+  } catch (error) {
+    logger.error('Kundli deletion failed', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to delete kundli', 500);
+  }
 });
 
 /**
@@ -212,16 +336,29 @@ const deleteKundli = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getBirthChart = asyncHandler(async (req, res) => {
-  const chart = {
-    type: 'rasi',
-    houses: [
-      { house: 1, sign: 'Gemini', planets: ['Mercury', 'Venus'] },
-      { house: 2, sign: 'Cancer', planets: [] },
-      { house: 3, sign: 'Leo', planets: ['Sun'] },
-    ],
-  };
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Birth chart retrieved', chart);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    const chart = {
+      type: 'rasi',
+      chart_data: birthDetails.rasi_chart,
+      planetary_positions: birthDetails.planetary_positions,
+    };
+
+    return successResponse(res, 'Birth chart retrieved', chart);
+  } catch (error) {
+    logger.error('Error fetching birth chart', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch birth chart', 500);
+  }
 });
 
 /**
@@ -230,38 +367,78 @@ const getBirthChart = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getNavamsaChart = asyncHandler(async (req, res) => {
-  const chart = {
-    type: 'navamsa',
-    houses: [
-      { house: 1, sign: 'Leo', planets: ['Sun'] },
-    ],
-  };
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Navamsa chart retrieved', chart);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    const chart = {
+      type: 'navamsa',
+      chart_data: birthDetails.navamsa_chart,
+    };
+
+    return successResponse(res, 'Navamsa chart retrieved', chart);
+  } catch (error) {
+    logger.error('Error fetching Navamsa chart', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch Navamsa chart', 500);
+  }
 });
 
 /**
  * @desc    Get divisional chart (D1-D60)
  * @route   GET /api/kundli/:id/divisional/:type
- * @access  Private (Premium)
+ * @access  Private - Premium only
  */
 const getDivisionalChart = asyncHandler(async (req, res) => {
-  const { type } = req.params;
+  const { id, type } = req.params;
+  const userId = req.user.id;
 
-  const names = {
-    '1': 'Rasi (Main Birth Chart)',
-    '2': 'Hora (Wealth)',
-    '9': 'Navamsa (Marriage)',
-    '10': 'Dasamsa (Career)',
-  };
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
 
-  const chart = {
-    type: `D${type}`,
-    name: names[type] || `D${type}`,
-    houses: [],
-  };
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
 
-  return successResponse(res, 'Divisional chart retrieved', chart);
+    const divisionalNames = {
+      '1': 'Rasi (Main Birth Chart)',
+      '2': 'Hora (Wealth)',
+      '3': 'Drekkana (Siblings)',
+      '4': 'Chaturthamsa (Fortune)',
+      '7': 'Saptamsa (Children)',
+      '9': 'Navamsa (Marriage)',
+      '10': 'Dasamsa (Career)',
+      '12': 'Dwadasamsa (Parents)',
+      '16': 'Shodasamsa (Vehicles)',
+      '20': 'Vimsamsa (Spirituality)',
+      '24': 'Chaturvimsamsa (Education)',
+      '27': 'Saptavimsamsa (Strength)',
+      '30': 'Trimsamsa (Misfortunes)',
+      '40': 'Khavedamsa (Auspicious)',
+      '45': 'Akshavedamsa (General)',
+      '60': 'Shashtyamsa (Complete)',
+    };
+
+    const chart = {
+      type: `D${type}`,
+      name: divisionalNames[type] || `D${type}`,
+      chart_data: birthDetails.shodashvarga_table,
+    };
+
+    return successResponse(res, 'Divisional chart retrieved', chart);
+  } catch (error) {
+    logger.error('Error fetching divisional chart', { error: error.message, kundliId: id, chartType: type });
+    return errorResponse(res, 'Failed to fetch divisional chart', 500);
+  }
 });
 
 /**
@@ -270,19 +447,23 @@ const getDivisionalChart = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getPlanetaryPositions = asyncHandler(async (req, res) => {
-  const planets = [
-    {
-      name: 'Sun',
-      sign: 'Leo',
-      degree: 15.5,
-      house: 3,
-      retrograde: false,
-      nakshatra: 'Magha',
-      lord: 'Sun',
-    },
-  ];
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Planetary positions retrieved', planets);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    return successResponse(res, 'Planetary positions retrieved', birthDetails.planetary_positions);
+  } catch (error) {
+    logger.error('Error fetching planetary positions', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch planetary positions', 500);
+  }
 });
 
 /**
@@ -291,18 +472,26 @@ const getPlanetaryPositions = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getHouses = asyncHandler(async (req, res) => {
-  const houses = [
-    {
-      house: 1,
-      sign: 'Gemini',
-      cusp: '15°30\'',
-      lord: 'Mercury',
-      planets: ['Mercury', 'Venus'],
-      significance: 'Self, appearance, personality',
-    },
-  ];
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Houses retrieved', houses);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    return successResponse(res, 'Houses retrieved', {
+      house_analysis: birthDetails.house_analysis,
+      house_cusps: birthDetails.house_cusps,
+    });
+  } catch (error) {
+    logger.error('Error fetching houses', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch houses', 500);
+  }
 });
 
 /**
@@ -311,18 +500,28 @@ const getHouses = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getDashaPeriods = asyncHandler(async (req, res) => {
-  const dashas = {
-    current: {
-      mahadasha: {
-        planet: 'Venus',
-        startDate: '2020-01-01',
-        endDate: '2030-01-01',
-        remainingYears: 5,
-      },
-    },
-  };
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Dasha periods retrieved', dashas);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    const dashas = {
+      current: birthDetails.current_dasha,
+      complete_timeline: birthDetails.vimshottari_dasha,
+    };
+
+    return successResponse(res, 'Dasha periods retrieved', dashas);
+  } catch (error) {
+    logger.error('Error fetching dasha periods', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch dasha periods', 500);
+  }
 });
 
 /**
@@ -331,16 +530,23 @@ const getDashaPeriods = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getYogas = asyncHandler(async (req, res) => {
-  const yogas = [
-    {
-      name: 'Gajakesari Yoga',
-      description: 'Jupiter and Moon in mutual kendras',
-      effect: 'Wisdom, prosperity, and good character',
-      strength: 'Strong',
-    },
-  ];
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Yogas retrieved', yogas);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    return successResponse(res, 'Yogas retrieved', birthDetails.yogas || []);
+  } catch (error) {
+    logger.error('Error fetching yogas', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch yogas', 500);
+  }
 });
 
 /**
@@ -349,36 +555,48 @@ const getYogas = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getDoshas = asyncHandler(async (req, res) => {
-  const doshas = [
-    {
-      name: 'Mangal Dosha',
-      present: true,
-      severity: 'Moderate',
-      description: 'Mars in 7th house',
-      remedies: ['Marry after 28 years of age'],
-    },
-  ];
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Doshas retrieved', doshas);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    return successResponse(res, 'Doshas retrieved', birthDetails.doshas || []);
+  } catch (error) {
+    logger.error('Error fetching doshas', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch doshas', 500);
+  }
 });
 
 /**
- * @desc    Get planetary strengths
+ * @desc    Get planetary strengths (Shadbala, Ashtakavarga)
  * @route   GET /api/kundli/:id/strengths
- * @access  Private (Premium)
+ * @access  Private - Premium only
  */
 const getPlanetaryStrengths = asyncHandler(async (req, res) => {
-  const strengths = [
-    {
-      planet: 'Sun',
-      shadbala: 425.5,
-      ashtakavarga: 32,
-      dignity: 'Exalted',
-      strength: 'Very Strong',
-    },
-  ];
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Planetary strengths retrieved', strengths);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    return successResponse(res, 'Planetary strengths retrieved', birthDetails.planetary_strengths || []);
+  } catch (error) {
+    logger.error('Error fetching planetary strengths', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch planetary strengths', 500);
+  }
 });
 
 /**
@@ -387,17 +605,26 @@ const getPlanetaryStrengths = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getPlanetaryAspects = asyncHandler(async (req, res) => {
-  const aspects = [
-    {
-      from: 'Jupiter',
-      to: 'Moon',
-      type: 'Trine',
-      angle: 120,
-      effect: 'Beneficial',
-    },
-  ];
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Planetary aspects retrieved', aspects);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    // Aspects would be calculated from planetary positions
+    const aspects = [];
+
+    return successResponse(res, 'Planetary aspects retrieved', aspects);
+  } catch (error) {
+    logger.error('Error fetching planetary aspects', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch planetary aspects', 500);
+  }
 });
 
 /**
@@ -406,16 +633,28 @@ const getPlanetaryAspects = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getNakshatraDetails = asyncHandler(async (req, res) => {
-  const nakshatras = {
-    birthNakshatra: {
-      name: 'Mrigashira',
-      pada: 1,
-      lord: 'Mars',
-      deity: 'Soma',
-    },
-  };
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Nakshatra details retrieved', nakshatras);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    const nakshatras = {
+      birthNakshatra: birthDetails.nakshatra,
+      details: birthDetails.planetary_positions
+    };
+
+    return successResponse(res, 'Nakshatra details retrieved', nakshatras);
+  } catch (error) {
+    logger.error('Error fetching nakshatra details', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch nakshatra details', 500);
+  }
 });
 
 /**
@@ -424,15 +663,41 @@ const getNakshatraDetails = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const getKundliSummary = asyncHandler(async (req, res) => {
-  const summary = {
-    basicInfo: {
-      ascendant: 'Gemini',
-      moonSign: 'Taurus',
-      sunSign: 'Leo',
-    },
-  };
+  const { id } = req.params;
+  const userId = req.user.id;
 
-  return successResponse(res, 'Kundli summary retrieved', summary);
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    const summary = {
+      basicInfo: {
+        ascendant: birthDetails.ascendant,
+        moonSign: birthDetails.moon_sign,
+        sunSign: birthDetails.sun_sign,
+        nakshatra: birthDetails.nakshatra,
+      },
+      birthDetails: {
+        name: birthDetails.name,
+        birth_date: birthDetails.birth_date,
+        birth_time: birthDetails.birth_time,
+        birth_location: birthDetails.birth_location,
+      },
+      currentDasha: birthDetails.current_dasha,
+      yogas: birthDetails.yogas,
+      doshas: birthDetails.doshas,
+    };
+
+    return successResponse(res, 'Kundli summary retrieved', summary);
+  } catch (error) {
+    logger.error('Error fetching kundli summary', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch kundli summary', 500);
+  }
 });
 
 /**
@@ -440,10 +705,6 @@ const getKundliSummary = asyncHandler(async (req, res) => {
  * @route   GET /api/kundli/:id/pdf
  * @access  Private
  */
-// Update downloadKundliPDF function in kundliController.js
-// Location: backend/functions/files/src/controllers/kundliController.js
-// REPLACE lines 534-636 with this:
-
 const downloadKundliPDF = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
@@ -511,14 +772,13 @@ const downloadKundliPDF = asyncHandler(async (req, res) => {
  */
 const generateShareLink = asyncHandler(async (req, res) => {
   const shareUrl = `${process.env.FRONTEND_URL}/kundli/shared/${uuidv4()}`;
-
   return successResponse(res, 'Share link generated', { shareUrl });
 });
 
 /**
- * @desc    Match two kundlis for compatibility
+ * @desc    Match two kundlis for compatibility (Gun Milan)
  * @route   POST /api/kundli/match
- * @access  Private (Premium)
+ * @access  Private - Premium only
  */
 const matchKundlis = asyncHandler(async (req, res) => {
   const match = {
@@ -526,7 +786,6 @@ const matchKundlis = asyncHandler(async (req, res) => {
     maxScore: 36,
     percentage: 78,
   };
-
   return successResponse(res, 'Kundli matching complete', match);
 });
 
@@ -549,19 +808,39 @@ const getFamilyKundlis = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Verify location
+ * @desc    Verify and get coordinates for location
  * @route   POST /api/kundli/verify-location
  * @access  Private
  */
 const verifyLocation = asyncHandler(async (req, res) => {
-  const coordinates = {
-    place: 'Mumbai, Maharashtra, India',
-    latitude: 19.0760,
-    longitude: 72.8777,
-    timezone: 'Asia/Kolkata',
-  };
+  const { placeOfBirth } = req.body;
 
-  return successResponse(res, 'Location verified', coordinates);
+  try {
+    const geoResponse = await axios.get(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(placeOfBirth)}`,
+      {
+        headers: {
+          'User-Agent': 'AstroAI/1.0 (astrology-app)'
+        }
+      }
+    );
+
+    if (geoResponse.data && geoResponse.data.length > 0) {
+      const location = geoResponse.data[0];
+      const coordinates = {
+        place: location.display_name,
+        latitude: parseFloat(location.lat),
+        longitude: parseFloat(location.lon),
+        timezone: 'Asia/Kolkata',
+      };
+      return successResponse(res, 'Location verified', coordinates);
+    } else {
+      return errorResponse(res, 'Location not found', 404);
+    }
+  } catch (error) {
+    logger.error('Location verification failed', { error: error.message, placeOfBirth });
+    return errorResponse(res, 'Failed to verify location', 500);
+  }
 });
 
 /**
@@ -574,17 +853,43 @@ const getBirthPanchang = asyncHandler(async (req, res) => {
     tithi: 'Shukla Panchami',
     nakshatra: 'Mrigashira',
   };
-
   return successResponse(res, 'Birth panchang retrieved', panchang);
 });
 
 /**
- * @desc    Get current transits
+ * @desc    Get current transits over natal chart
  * @route   GET /api/kundli/:id/current-transits
  * @access  Private
  */
 const getCurrentTransits = asyncHandler(async (req, res) => {
-  return successResponse(res, 'Current transits retrieved', []);
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const birthDetails = await BirthDetails.findOne({
+      where: { id, user_id: userId }
+    });
+
+    if (!birthDetails) {
+      return notFoundResponse(res, 'Kundli');
+    }
+
+    // Call Python engine for current transits
+    const transitData = {
+      birthDate: birthDetails.birth_date,
+      birthTime: birthDetails.birth_time,
+      latitude: birthDetails.latitude,
+      longitude: birthDetails.longitude,
+      timezone: birthDetails.timezone,
+    };
+
+    const result = await pythonEngine.getCurrentTransits(transitData);
+
+    return successResponse(res, 'Current transits retrieved', result.data);
+  } catch (error) {
+    logger.error('Error fetching current transits', { error: error.message, kundliId: id });
+    return errorResponse(res, 'Failed to fetch current transits', 500);
+  }
 });
 
 module.exports = {

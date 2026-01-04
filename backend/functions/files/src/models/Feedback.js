@@ -4,12 +4,12 @@
 module.exports = (sequelize, DataTypes) => {
   const Feedback = sequelize.define('Feedback', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
+      defaultValue: () => require('crypto').randomUUID(),
       primaryKey: true,
     },
     user_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'users',
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     category: {
       type: DataTypes.ENUM('app', 'prediction_accuracy', 'chat', 'kundli', 'ui_ux', 'performance', 'payment', 'other'),
-      defaultValue: 'general',
+      defaultValue: 'other',
       comment: 'Category of feedback',
     },
     // Rating
@@ -70,12 +70,12 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'Which screen/page this feedback is about',
     },
     related_session_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: true,
       comment: 'Related chat session ID if applicable',
     },
     related_horoscope_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: true,
       comment: 'Related horoscope ID if applicable',
     },

@@ -1,4 +1,4 @@
-// backend/functions/files/src/routes/horoscope.js
+// backend/src/routes/horoscope.js
 // Horoscope Prediction Routes for AstroAI Backend
 
 const express = require('express');
@@ -10,8 +10,6 @@ const horoscopeController = require('../controllers/horoscopeController');
 // Import middleware
 const { verifyToken, requireSubscription } = require('../middleware/authMiddleware');
 const { horoscopeLimiter } = require('../middleware/rateLimiter');
-const { validate } = require('../utils/validator');
-const { horoscopeRequestSchema } = require('../utils/validator');
 
 /**
  * @route   GET /api/horoscope/daily
@@ -74,123 +72,91 @@ router.get(
 );
 
 /**
- * @route   POST /api/horoscope/generate
- * @desc    Generate custom horoscope for specific date/type
+ * @route   GET /api/horoscope/category
+ * @desc    Get horoscope by category
  * @access  Private
  */
-router.post(
-  '/generate',
+router.get(
+  '/category',
   verifyToken,
   horoscopeLimiter,
-  validate(horoscopeRequestSchema),
-  horoscopeController.generateHoroscope
+  horoscopeController.getHoroscopeByCategory
 );
 
 /**
- * @route   GET /api/horoscope/career
- * @desc    Get career-focused predictions
+ * @route   GET /api/horoscope/transits/current
+ * @desc    Get current planetary transits
  * @access  Private
  */
 router.get(
-  '/career',
+  '/transits/current',
   verifyToken,
-  requireSubscription('premium'),
-  horoscopeController.getCareerPredictions
-);
-
-/**
- * @route   GET /api/horoscope/relationships
- * @desc    Get relationship predictions
- * @access  Private
- */
-router.get(
-  '/relationships',
-  verifyToken,
-  horoscopeController.getRelationshipPredictions
-);
-
-/**
- * @route   GET /api/horoscope/health
- * @desc    Get health predictions
- * @access  Private
- */
-router.get(
-  '/health',
-  verifyToken,
-  horoscopeController.getHealthPredictions
-);
-
-/**
- * @route   GET /api/horoscope/finance
- * @desc    Get financial predictions
- * @access  Private
- */
-router.get(
-  '/finance',
-  verifyToken,
-  horoscopeController.getFinancePredictions
+  horoscopeLimiter,
+  horoscopeController.getCurrentTransits
 );
 
 /**
  * @route   GET /api/horoscope/transits
- * @desc    Get current planetary transits and their effects
+ * @desc    Get transit predictions
  * @access  Private
  */
 router.get(
   '/transits',
   verifyToken,
-  horoscopeController.getCurrentTransits
+  horoscopeLimiter,
+  horoscopeController.getTransitPredictions
 );
 
 /**
  * @route   GET /api/horoscope/dasha
- * @desc    Get current dasha period analysis
+ * @desc    Get dasha predictions
  * @access  Private
  */
 router.get(
   '/dasha',
   verifyToken,
-  horoscopeController.getCurrentDasha
-);
-
-/**
- * @route   GET /api/horoscope/remedies
- * @desc    Get personalized remedies
- * @access  Private
- */
-router.get(
-  '/remedies',
-  verifyToken,
-  horoscopeController.getRemedies
-);
-
-/**
- * @route   GET /api/horoscope/auspicious-times
- * @desc    Get auspicious times (muhurat) for activities
- * @access  Private
- */
-router.get(
-  '/auspicious-times',
-  verifyToken,
-  requireSubscription('premium'),
-  horoscopeController.getAuspiciousTimes
+  horoscopeLimiter,
+  horoscopeController.getDashaPredictions
 );
 
 /**
  * @route   POST /api/horoscope/compatibility
- * @desc    Check compatibility between two birth charts
+ * @desc    Get compatibility analysis
  * @access  Private
  */
 router.post(
   '/compatibility',
   verifyToken,
   requireSubscription('premium'),
-  horoscopeController.checkCompatibility
+  horoscopeController.getCompatibility
+);
+
+/**
+ * @route   GET /api/horoscope/remedies
+ * @desc    Get remedies
+ * @access  Private
+ */
+router.get(
+  '/remedies',
+  verifyToken,
+  horoscopeLimiter,
+  horoscopeController.getRemedies
+);
+
+/**
+ * @route   POST /api/horoscope/feedback
+ * @desc    Submit horoscope feedback
+ * @access  Private
+ */
+router.post(
+  '/feedback',
+  verifyToken,
+  horoscopeController.submitFeedback
 );
 
 /**
  * @route   GET /api/horoscope/history
- * @desc    Get user's horoscope history
+ * @desc    Get horoscope history
  * @access  Private
  */
 router.get(
@@ -200,58 +166,125 @@ router.get(
 );
 
 /**
- * @route   GET /api/horoscope/history/:id
- * @desc    Get specific horoscope by ID
+ * @route   GET /api/horoscope/muhurat
+ * @desc    Get auspicious times
  * @access  Private
  */
 router.get(
-  '/history/:id',
+  '/muhurat',
   verifyToken,
-  horoscopeController.getHoroscopeById
+  requireSubscription('premium'),
+  horoscopeController.getAuspiciousTimes
 );
 
 /**
- * @route   POST /api/horoscope/save
- * @desc    Save horoscope to favorites
+ * @route   POST /api/horoscope/personalized
+ * @desc    Get personalized prediction
  * @access  Private
  */
 router.post(
-  '/save',
+  '/personalized',
   verifyToken,
-  horoscopeController.saveHoroscope
+  horoscopeController.getPersonalizedPrediction
 );
 
 /**
- * @route   DELETE /api/horoscope/saved/:id
- * @desc    Remove horoscope from favorites
+ * @route   POST /api/horoscope/regenerate
+ * @desc    Regenerate horoscope
  * @access  Private
  */
-router.delete(
-  '/saved/:id',
+router.post(
+  '/regenerate',
   verifyToken,
-  horoscopeController.deleteSavedHoroscope
+  horoscopeController.regenerateHoroscope
 );
 
 /**
- * @route   GET /api/horoscope/export/:id
- * @desc    Export horoscope as PDF
+ * @route   GET /api/horoscope/summary
+ * @desc    Get horoscope summary
  * @access  Private
  */
 router.get(
-  '/export/:id',
+  '/summary',
   verifyToken,
-  horoscopeController.exportHoroscope
+  horoscopeController.getHoroscopeSummary
 );
 
 /**
- * @route   POST /api/horoscope/feedback/:id
- * @desc    Provide feedback on horoscope accuracy
+ * @route   POST /api/horoscope/share
+ * @desc    Share horoscope
  * @access  Private
  */
 router.post(
-  '/feedback/:id',
+  '/share',
   verifyToken,
-  horoscopeController.provideFeedback
+  horoscopeController.shareHoroscope
+);
+
+/**
+ * @route   GET /api/horoscope/download/pdf
+ * @desc    Download horoscope PDF
+ * @access  Private
+ */
+router.get(
+  '/download/pdf',
+  verifyToken,
+  horoscopeController.downloadHoroscopePDF
+);
+
+/**
+ * @route   GET /api/horoscope/notifications/settings
+ * @desc    Get notification settings
+ * @access  Private
+ */
+router.get(
+  '/notifications/settings',
+  verifyToken,
+  horoscopeController.getNotificationSettings
+);
+
+/**
+ * @route   PUT /api/horoscope/notifications/settings
+ * @desc    Update notification settings
+ * @access  Private
+ */
+router.put(
+  '/notifications/settings',
+  verifyToken,
+  horoscopeController.updateNotificationSettings
+);
+
+/**
+ * @route   GET /api/horoscope/zodiac
+ * @desc    Get zodiac sign info
+ * @access  Private
+ */
+router.get(
+  '/zodiac',
+  verifyToken,
+  horoscopeController.getZodiacSignInfo
+);
+
+/**
+ * @route   GET /api/horoscope/planets
+ * @desc    Get planet positions
+ * @access  Private
+ */
+router.get(
+  '/planets',
+  verifyToken,
+  horoscopeController.getPlanetPositions
+);
+
+/**
+ * @route   GET /api/horoscope/houses
+ * @desc    Get house analysis
+ * @access  Private
+ */
+router.get(
+  '/houses',
+  verifyToken,
+  horoscopeController.getHouseAnalysis
 );
 
 module.exports = router;

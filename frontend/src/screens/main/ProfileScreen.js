@@ -1,343 +1,209 @@
+// frontend/src/screens/main/ProfileScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { Text, Avatar, List, Divider, Button } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, List, Avatar, Button, Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signOutUser } from '../../services/firebase/auth';
+import { signOut } from '../../services/firebase/auth';
+import Header from '../../components/common/Header';
+import BirthDetailsModal from '../../components/common/BirthDetailsModal';
+import EditProfileModal from '../../components/common/EditProfileModal';
 
 export default function ProfileScreen({ navigation }) {
-  
-  // ✅ Real user data from AsyncStorage
-  const [userData, setUserData] = useState({
-    name: 'Loading...',
-    email: 'Loading...',
-    photoURL: null,
-    memberSince: 'Dec 2024',
-    questionsAsked: 12,
-    questionsRemaining: 3,
-    dailyLimit: 5,
-  });
+  const [userData, setUserData] = useState(null);
+  const [showBirthModal, setShowBirthModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
-  // ✅ Load user data on mount
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem('@astroai_user_data');
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserData(prev => ({
-            ...prev,
-            name: user.name || 'User',
-            email: user.email || '',
-            photoURL: user.photoURL || null,
-          }));
-          console.log('Profile loaded user:', user.name);
-        }
-      } catch (error) {
-        console.error('Error loading user data in profile:', error);
-      }
-    };
-
     loadUserData();
   }, []);
 
+  const loadUserData = async () => {
+    try {
+      const userDataString = await AsyncStorage.getItem('@astroai_user_data');
+      if (userDataString) {
+        setUserData(JSON.parse(userDataString));
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
+
+  const handleBirthDetailsClick = () => {
+    setShowBirthModal(true);
+  };
+
+  const handleBirthDetailsUpdate = async () => {
+    await loadUserData();
+    Alert.alert('Success', 'Birth details updated successfully!');
+  };
+
   const handleEditProfile = () => {
-    Alert.alert('Coming Soon', 'Profile editing will be available soon!');
+    console.log('Edit Profile clicked');
+    setShowEditModal(true);
   };
 
-  const handleEditBirthDetails = () => {
-    navigation.navigate('BirthDetails');
+  const handleProfileUpdate = async (updatedData) => {
+    setUserData(updatedData);
+    await loadUserData();
   };
 
-  const handleFeedback = () => {
-    Alert.alert('Feedback', 'Feedback form will open here');
-  };
-
-  const handleShare = () => {
-    Alert.alert('Share App', 'Share functionality coming soon!');
-  };
-
-  const handleRateUs = () => {
-    Alert.alert('Rate Us', 'Play Store rating will open here');
-  };
-
-  const handlePrivacy = () => {
-    Alert.alert('Privacy Policy', 'Privacy policy details will be shown here');
-  };
-
-  const handleTerms = () => {
-    Alert.alert('Terms of Service', 'Terms details will be shown here');
-  };
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
     Alert.alert(
       'Logout',
       'Are you sure you want to logout?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Logout', 
+        {
+          text: 'Logout',
           style: 'destructive',
           onPress: async () => {
             try {
-              // ✅ Sign out from Firebase
-              await signOutUser();
-              // ✅ Clear AsyncStorage
+              await signOut();
               await AsyncStorage.multiRemove(['@astroai_user_data', '@astroai_auth_token']);
-              console.log('User logged out successfully');
-              // Navigation will be handled by AppNavigator automatically
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
             } catch (error) {
               console.error('Logout error:', error);
-              Alert.alert('Error', 'Failed to logout. Please try again.');
+              Alert.alert('Error', 'Failed to logout');
             }
-          }
+          },
         },
       ]
     );
   };
 
+  const handleFeedback = () => {
+    Alert.alert('Coming Soon', 'Feedback feature coming soon!');
+  };
+
   return (
     <View style={styles.container}>
-      {/* Header with Gradient */}
-      <LinearGradient
-        colors={['#6C3FB5', '#4A90E2']}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Profile</Text>
-        
-        {/* Profile Info */}
-        <View style={styles.profileSection}>
+      <Header navigation={navigation} />
+
+      <BirthDetailsModal
+        visible={showBirthModal}
+        onClose={() => setShowBirthModal(false)}
+        onConfirm={handleBirthDetailsUpdate}
+        purpose="profile"
+      />
+
+      <EditProfileModal
+        visible={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onConfirm={handleProfileUpdate}
+      />
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.profileHeader}>
           <Avatar.Text 
             size={80} 
-            label={userData.name.split(' ').map(n => n[0]).join('')}
+            label={userData?.name?.substring(0, 2).toUpperCase() || 'U'} 
             style={styles.avatar}
           />
-          <Text style={styles.userName}>{userData.name}</Text>
-          <Text style={styles.userEmail}>{userData.email}</Text>
-          <Text style={styles.memberSince}>Member since {userData.memberSince}</Text>
+          <Text style={styles.userName}>{userData?.name || 'User'}</Text>
+          <Text style={styles.userEmail}>{userData?.email || 'user@example.com'}</Text>
+          <Button 
+            mode="outlined" 
+            onPress={handleEditProfile}
+            style={styles.editButton}
+            icon="pencil"
+          >
+            Edit Profile
+          </Button>
         </View>
 
-        {/* Stats */}
-        <View style={styles.statsContainer}>
-          <StatCard 
-            icon="chat-question" 
-            value={userData.questionsAsked} 
-            label="Questions Asked"
-          />
-          <StatCard 
-            icon="chat-outline" 
-            value={`${userData.questionsRemaining}/${userData.dailyLimit}`} 
-            label="Today's Remaining"
-          />
-        </View>
-      </LinearGradient>
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>Account</Text>
+            <Divider style={styles.divider} />
+            
+            <List.Item
+              title="Birth Details"
+              description="Manage your birth information"
+              left={props => <List.Icon {...props} icon="calendar-account" color="#6C3FB5" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={handleBirthDetailsClick}
+              style={styles.listItem}
+            />
+            
+            <List.Item
+              title="Subscription"
+              description="Manage your plan"
+              left={props => <List.Icon {...props} icon="crown" color="#F39C12" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={() => Alert.alert('Coming Soon', 'Subscription management coming soon!')}
+              style={styles.listItem}
+            />
+          </Card.Content>
+        </Card>
 
-      {/* Menu Items */}
-      <ScrollView style={styles.menuContainer} showsVerticalScrollIndicator={false}>
-        
-        {/* Account Section */}
-        <Text style={styles.sectionTitle}>ACCOUNT</Text>
-        <List.Item
-          title="Edit Profile"
-          description="Update your personal information"
-          left={props => <List.Icon {...props} icon="account-edit" color="#6C3FB5" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handleEditProfile}
-          style={styles.menuItem}
-        />
-        <Divider />
-        <List.Item
-          title="Birth Details"
-          description="Edit your birth information"
-          left={props => <List.Icon {...props} icon="calendar-edit" color="#6C3FB5" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handleEditBirthDetails}
-          style={styles.menuItem}
-        />
-        <Divider />
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>Support</Text>
+            <Divider style={styles.divider} />
+            
+            <List.Item
+              title="Help Center"
+              description="Get help and support"
+              left={props => <List.Icon {...props} icon="help-circle" color="#9C27B0" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={() => Alert.alert('Coming Soon', 'Help center coming soon!')}
+              style={styles.listItem}
+            />
+            
+            <List.Item
+              title="Send Feedback"
+              description="Share your thoughts"
+              left={props => <List.Icon {...props} icon="message-text" color="#00BCD4" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={handleFeedback}
+              style={styles.listItem}
+            />
+            
+            <List.Item
+              title="Privacy Policy"
+              description="Read our privacy policy"
+              left={props => <List.Icon {...props} icon="shield-account" color="#607D8B" />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={() => Alert.alert('Coming Soon', 'Privacy policy coming soon!')}
+              style={styles.listItem}
+            />
+          </Card.Content>
+        </Card>
 
-        {/* App Section */}
-        <Text style={styles.sectionTitle}>APP</Text>
-        <List.Item
-          title="Send Feedback"
-          description="Help us improve"
-          left={props => <List.Icon {...props} icon="message-alert" color="#27AE60" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handleFeedback}
-          style={styles.menuItem}
-        />
-        <Divider />
-        <List.Item
-          title="Share App"
-          description="Invite friends to ZodiacAI"
-          left={props => <List.Icon {...props} icon="share-variant" color="#F39C12" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handleShare}
-          style={styles.menuItem}
-        />
-        <Divider />
-        <List.Item
-          title="Rate Us"
-          description="Rate us on Play Store"
-          left={props => <List.Icon {...props} icon="star" color="#E74C3C" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handleRateUs}
-          style={styles.menuItem}
-        />
-        <Divider />
-
-        {/* Legal Section */}
-        <Text style={styles.sectionTitle}>LEGAL</Text>
-        <List.Item
-          title="Privacy Policy"
-          left={props => <List.Icon {...props} icon="shield-check" color="#7F8C8D" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handlePrivacy}
-          style={styles.menuItem}
-        />
-        <Divider />
-        <List.Item
-          title="Terms of Service"
-          left={props => <List.Icon {...props} icon="file-document" color="#7F8C8D" />}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
-          onPress={handleTerms}
-          style={styles.menuItem}
-        />
-        <Divider />
-
-        {/* Logout Button */}
         <Button
-          mode="outlined"
+          mode="contained"
           onPress={handleLogout}
           style={styles.logoutButton}
-          textColor="#E74C3C"
           icon="logout"
+          buttonColor="#E74C3C"
         >
           Logout
         </Button>
 
-        {/* App Version */}
-        <Text style={styles.versionText}>Version 1.0.0 (Beta)</Text>
-
-        {/* Bottom Padding */}
         <View style={styles.bottomPadding} />
       </ScrollView>
     </View>
   );
 }
 
-// Stat Card Component
-function StatCard({ icon, value, label }) {
-  return (
-    <View style={styles.statCard}>
-      <MaterialCommunityIcons name={icon} size={24} color="#FFFFFF" />
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  header: {
-    paddingTop: 50,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 20,
-  },
-  profileSection: {
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  profileHeader: {
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 30,
+    backgroundColor: '#fff',
   },
-  avatar: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    marginBottom: 12,
-  },
-  userName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginTop: 8,
-  },
-  userEmail: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    opacity: 0.9,
-    marginTop: 4,
-  },
-  memberSince: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    opacity: 0.7,
-    marginTop: 4,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-  },
-  statCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 4,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginTop: 8,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    opacity: 0.9,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  menuContainer: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    marginTop: -10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 10,
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#7F8C8D',
-    marginLeft: 20,
-    marginTop: 20,
-    marginBottom: 8,
-  },
-  menuItem: {
-    backgroundColor: '#FFFFFF',
-  },
-  logoutButton: {
-    marginHorizontal: 20,
-    marginTop: 30,
-    borderColor: '#E74C3C',
-    borderRadius: 8,
-  },
-  versionText: {
-    fontSize: 12,
-    color: '#7F8C8D',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  bottomPadding: {
-    height: 40,
-  },
+  avatar: { backgroundColor: '#6C3FB5', marginBottom: 15 },
+  userName: { fontSize: 24, fontWeight: 'bold', color: '#2C3E50', marginBottom: 5 },
+  userEmail: { fontSize: 14, color: '#7F8C8D', marginBottom: 15 },
+  editButton: { marginTop: 10 },
+  card: { margin: 15, borderRadius: 12 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#2C3E50', marginBottom: 10 },
+  divider: { marginBottom: 10 },
+  listItem: { paddingVertical: 4 },
+  logoutButton: { margin: 15, marginTop: 20 },
+  bottomPadding: { height: 30 },
 });

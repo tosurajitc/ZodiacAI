@@ -1,127 +1,204 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+// frontend/src/screens/horoscope/MonthlyHoroscopeScreen.js
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, ActivityIndicator, Button } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '../../components/common/Header';
+import BirthDetailsModal from '../../components/common/BirthDetailsModal';
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function MonthlyHoroscopeScreen({ navigation }) {
-  
-  // Mock monthly horoscope - will be from Python engine
-  const monthlyData = {
-    month: 'January 2025',
-    overview: 'This month brings significant opportunities for growth and transformation. Jupiter\'s transit through your career house indicates professional advancement. Focus on building long-term relationships and financial planning.',
-    areas: [
-      {
-        icon: 'cash',
-        title: 'Finance',
-        color: '#27AE60',
-        text: 'Strong financial growth expected. First two weeks are excellent for investments. Property deals may finalize mid-month. Avoid speculative investments after 20th. Monthly income may increase by 15-20%.',
-      },
-      {
-        icon: 'briefcase',
-        title: 'Career',
-        color: '#F39C12',
-        text: 'Career takes center stage this month. Promotion or recognition likely between 10th-20th. New projects bring visibility. Job seekers will find opportunities after 15th. Avoid workplace conflicts during Mercury retrograde (5th-18th).',
-      },
-      {
-        icon: 'heart',
-        title: 'Relationship',
-        color: '#E74C3C',
-        text: 'Mixed month for relationships. Singles may meet someone special around 12th. Married couples should focus on communication. Venus retrograde may bring past issues to surface. Plan romantic outing on 25th.',
-      },
-      {
-        icon: 'heart-pulse',
-        title: 'Health',
-        color: '#4A90E2',
-        text: 'Generally positive health. Minor digestive issues possible in first week. Start new fitness routine after 8th. Mental health remains stable. Practice stress management techniques. Stay hydrated throughout.',
-      },
-    ],
-    keyDates: [
-      { date: '5-8 Jan', event: 'Important career decisions', type: 'career' },
-      { date: '12 Jan', event: 'Romantic opportunity', type: 'love' },
-      { date: '15-20 Jan', event: 'Financial gains', type: 'finance' },
-      { date: '25 Jan', event: 'Family celebration', type: 'family' },
-    ],
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [monthlyData, setMonthlyData] = useState(null);
+
+  const handleGenerateClick = () => {
+    setShowModal(true);
   };
 
+  const generateHoroscope = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('@astroai_auth_token');
+      const now = new Date();
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/horoscope/monthly?month=${now.getMonth() + 1}&year=${now.getFullYear()}`,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setMonthlyData(data.data);
+      } else {
+        Alert.alert('Error', data.message || 'Failed to generate horoscope');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'Failed to load monthly horoscope');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Empty State
+  if (!monthlyData && !loading) {
+    return (
+      <View style={styles.container}>
+        <Header navigation={navigation} />
+        
+        <BirthDetailsModal
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={generateHoroscope}
+          purpose="horoscope"
+        />
+        
+        <ScrollView contentContainerStyle={styles.emptyContainer}>
+          <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.emptyHeader}>
+            <Text style={styles.emptyTitle}>Monthly Horoscope</Text>
+            <Text style={styles.emptyDate}>{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</Text>
+          </LinearGradient>
+
+          <View style={styles.emptyContent}>
+            <MaterialCommunityIcons name="calendar-month" size={80} color="#6C3FB5" />
+            <Text style={styles.emptyText}>
+              Monthly horoscope: A monthly horoscope provides a comprehensive astrological forecast for the current month, analyzing the influence of planetary movements and their impact on your zodiac sign. It offers insights into major life areas such as career, relationships, health, and finances, helping you prepare for upcoming opportunities and challenges. The prediction includes key planetary positions like Jupiter's transit or Saturn's influence, along with lucky numbers, colors, or remedies to enhance positive energies and mitigate negative ones.
+            </Text>
+            <Button 
+              mode="contained" 
+              onPress={handleGenerateClick}
+              style={styles.generateButton}
+              icon="star"
+            >
+              Generate Now
+            </Button>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Loading State
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Header navigation={navigation} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#6C3FB5" />
+          <Text style={styles.loadingText}>Generating your monthly horoscope...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Main Content
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.header}>
-        <View style={styles.headerTop}>
-          <MaterialCommunityIcons 
-            name="arrow-left" 
-            size={24} 
-            color="#FFFFFF" 
-            onPress={() => navigation.goBack()}
-          />
-          <Text style={styles.headerTitle}>Monthly Horoscope</Text>
-          <View style={{ width: 24 }} />
-        </View>
-        <Text style={styles.monthText}>{monthlyData.month}</Text>
-      </LinearGradient>
+      <Header navigation={navigation} />
+      
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.header}>
+          <Text style={styles.title}>Monthly Horoscope</Text>
+          <Text style={styles.month}>{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</Text>
+        </LinearGradient>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        
-        {/* Overview Card */}
         <Card style={styles.card}>
           <Card.Content>
-            <Text style={styles.overviewTitle}>Monthly Overview</Text>
-            <Text style={styles.overviewText}>{monthlyData.overview}</Text>
+            <Text style={styles.sectionTitle}>Finance</Text>
+            <Text style={styles.prediction}>{monthlyData?.finance_prediction || 'Loading...'}</Text>
+            <Text style={styles.score}>Score: {monthlyData?.finance_score || 7}/10</Text>
           </Card.Content>
         </Card>
 
-        {/* Area Cards */}
-        {monthlyData.areas.map((area, index) => (
-          <Card key={index} style={styles.card}>
-            <Card.Content>
-              <View style={styles.areaHeader}>
-                <View style={[styles.areaIcon, { backgroundColor: area.color }]}>
-                  <MaterialCommunityIcons name={area.icon} size={24} color="#FFFFFF" />
-                </View>
-                <Text style={styles.areaTitle}>{area.title}</Text>
-              </View>
-              <Text style={styles.areaText}>{area.text}</Text>
-            </Card.Content>
-          </Card>
-        ))}
-
-        {/* Key Dates */}
         <Card style={styles.card}>
           <Card.Content>
-            <Text style={styles.cardTitle}>🗓️ Important Dates</Text>
-            {monthlyData.keyDates.map((item, index) => (
-              <View key={index} style={styles.keyDateItem}>
-                <Text style={styles.keyDateDate}>{item.date}</Text>
-                <Text style={styles.keyDateEvent}>{item.event}</Text>
-              </View>
-            ))}
+            <Text style={styles.sectionTitle}>Career</Text>
+            <Text style={styles.prediction}>{monthlyData?.career_prediction || 'Loading...'}</Text>
+            <Text style={styles.score}>Score: {monthlyData?.career_score || 7}/10</Text>
           </Card.Content>
         </Card>
 
-        <View style={styles.bottomPadding} />
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>Relationship</Text>
+            <Text style={styles.prediction}>{monthlyData?.relationship_prediction || 'Loading...'}</Text>
+            <Text style={styles.score}>Score: {monthlyData?.relationship_score || 7}/10</Text>
+          </Card.Content>
+        </Card>
+
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>Health</Text>
+            <Text style={styles.prediction}>{monthlyData?.health_prediction || 'Loading...'}</Text>
+            <Text style={styles.score}>Score: {monthlyData?.health_score || 7}/10</Text>
+          </Card.Content>
+        </Card>
+
+        <Button 
+          mode="outlined" 
+          onPress={handleGenerateClick}
+          style={styles.regenerateButton}
+          icon="refresh"
+        >
+          Update Birth Details
+        </Button>
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F5F5' },
-  header: { paddingTop: 50, paddingBottom: 20, paddingHorizontal: 20 },
-  headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#FFFFFF' },
-  monthText: { fontSize: 18, color: '#FFFFFF', textAlign: 'center', opacity: 0.9 },
-  content: { flex: 1, paddingHorizontal: 20, marginTop: -10 },
-  card: { marginTop: 16, borderRadius: 12, elevation: 2 },
-  overviewTitle: { fontSize: 18, fontWeight: 'bold', color: '#2C3E50', marginBottom: 12 },
-  overviewText: { fontSize: 15, color: '#2C3E50', lineHeight: 24 },
-  areaHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-  areaIcon: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
-  areaTitle: { fontSize: 18, fontWeight: 'bold', color: '#2C3E50', marginLeft: 12 },
-  areaText: { fontSize: 14, color: '#2C3E50', lineHeight: 22 },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', color: '#2C3E50', marginBottom: 16 },
-  keyDateItem: { flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#F0F0F0' },
-  keyDateDate: { fontSize: 14, fontWeight: 'bold', color: '#6C3FB5', width: 100 },
-  keyDateEvent: { fontSize: 14, color: '#2C3E50', flex: 1 },
-  bottomPadding: { height: 40 },
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  
+  // Empty State
+  emptyContainer: { flexGrow: 1 },
+  emptyHeader: { padding: 30, alignItems: 'center' },
+  emptyTitle: { fontSize: 28, fontWeight: 'bold', color: '#fff' },
+  emptyDate: { fontSize: 16, color: '#fff', marginTop: 5 },
+  emptyContent: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 40 
+  },
+  emptyText: { 
+    fontSize: 16, 
+    color: '#7F8C8D', 
+    textAlign: 'center', 
+    marginVertical: 20,
+    lineHeight: 24 
+  },
+  generateButton: { 
+    marginTop: 20, 
+    paddingHorizontal: 30 
+  },
+
+  // Loading State
+  loadingContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  loadingText: { 
+    marginTop: 16, 
+    fontSize: 16, 
+    color: '#7F8C8D' 
+  },
+
+  // Main Content
+  header: { padding: 30, alignItems: 'center' },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#fff' },
+  month: { fontSize: 16, color: '#fff', marginTop: 5 },
+  card: { margin: 15 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+  prediction: { fontSize: 16, lineHeight: 24, marginBottom: 10 },
+  score: { fontSize: 14, fontWeight: 'bold', color: '#6C3FB5' },
+  regenerateButton: { 
+    margin: 15,
+    marginBottom: 30 
+  },
 });

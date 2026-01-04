@@ -6,8 +6,8 @@ const crypto = require('crypto');
 module.exports = (sequelize, DataTypes) => {
   const BirthDetails = sequelize.define('BirthDetails', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
+      defaultValue: () => require('crypto').randomUUID(),
       primaryKey: true,
     },
     user_id: {

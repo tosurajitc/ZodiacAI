@@ -95,14 +95,14 @@ async def health_check():
     
     # Check Horoscope Generators
     try:
-        from calculations.horoscope_generator import HoroscopeGenerator
+        from horoscopes.horoscope_generator import HoroscopeGenerator
         components_status["horoscope_generator"] = "operational"
     except Exception as e:
         components_status["horoscope_generator"] = f"error: {str(e)}"
     
     # Check Remedy Engine
     try:
-        from calculations.remedies.remedy_engine import RemedyEngine
+        from remedies.remedy_engine import RemedyEngine
         components_status["remedy_engine"] = "operational"
     except Exception as e:
         components_status["remedy_engine"] = f"error: {str(e)}"
@@ -120,7 +120,7 @@ async def health_check():
 # Include API routes
 app.include_router(
     router,
-    prefix="/api",
+    prefix="",
     dependencies=[Depends(verify_api_key)]
 )
 
@@ -173,14 +173,14 @@ async def startup_event():
     
     # Check Horoscope Generators
     try:
-        from calculations.horoscope_generator import HoroscopeGenerator
+        from horoscopes.horoscope_generator import HoroscopeGenerator
         print("✅ Horoscope generators loaded successfully")
     except Exception as e:
         print(f"⚠️  Horoscope generators warning: {e}")
     
     # Check Remedy Engine
     try:
-        from calculations.remedies.remedy_engine import RemedyEngine
+        from remedies.remedy_engine import RemedyEngine
         print("✅ Remedy engine loaded successfully")
     except Exception as e:
         print(f"⚠️  Remedy engine warning: {e}")

@@ -1,378 +1,459 @@
+// frontend/src/screens/horoscope/RemediesScreen.js
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, ActivityIndicator, Button, Chip, List } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '../../components/common/Header';
+import BirthDetailsModal from '../../components/common/BirthDetailsModal';
 
-const RemediesScreen = () => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
-  const categories = [
-    { id: 'all', label: 'All', icon: 'apps' },
-    { id: 'gemstone', label: 'Gemstones', icon: 'diamond' },
-    { id: 'mantra', label: 'Mantras', icon: 'musical-notes' },
-    { id: 'ritual', label: 'Rituals', icon: 'flame' },
-    { id: 'lifestyle', label: 'Lifestyle', icon: 'leaf' },
-  ];
+export default function RemediesScreen({ navigation }) {
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [remediesData, setRemediesData] = useState(null);
 
-  const remedies = [
-    {
-      id: 1,
-      category: 'gemstone',
-      title: 'Blue Sapphire (Neelam)',
-      planet: 'Saturn',
-      description: 'Wear a 4-5 carat blue sapphire in silver ring on middle finger.',
-      instructions: [
-        'Purchase on Saturday during Saturn hora',
-        'Energize with Saturn mantra 108 times',
-        'Wear on Saturday morning after sunrise',
-        'Clean weekly with milk and water',
-      ],
-      priority: 'High',
-      color: '#3b82f6',
-    },
-    {
-      id: 2,
-      category: 'mantra',
-      title: 'Shani Mantra',
-      planet: 'Saturn',
-      description: 'Chant Saturn mantra daily for removing obstacles.',
-      instructions: [
-        'Om Sham Shanicharaya Namah (108 times)',
-        'Chant during Saturn hora or Saturday',
-        'Face west direction while chanting',
-        'Use rudraksha mala for counting',
-      ],
-      priority: 'High',
-      color: '#8b5cf6',
-    },
-    {
-      id: 3,
-      category: 'ritual',
-      title: 'Saturday Fasting',
-      planet: 'Saturn',
-      description: 'Observe fast on Saturdays to appease Saturn.',
-      instructions: [
-        'Fast from sunrise to sunset',
-        'Consume only fruits and milk',
-        'Donate black sesame seeds to poor',
-        'Light mustard oil lamp in evening',
-      ],
-      priority: 'Medium',
-      color: '#ec4899',
-    },
-    {
-      id: 4,
-      category: 'lifestyle',
-      title: 'Color Therapy',
-      planet: 'General',
-      description: 'Wear favorable colors to enhance positive energies.',
-      instructions: [
-        'Monday: White/Cream colors',
-        'Saturday: Black/Dark blue colors',
-        'Thursday: Yellow/Golden colors',
-        'Avoid red on Saturdays',
-      ],
-      priority: 'Low',
-      color: '#10b981',
-    },
-    {
-      id: 5,
-      category: 'gemstone',
-      title: 'Yellow Sapphire (Pukhraj)',
-      planet: 'Jupiter',
-      description: 'Wear a 3-4 carat yellow sapphire in gold ring on index finger.',
-      instructions: [
-        'Purchase on Thursday during Jupiter hora',
-        'Energize with Jupiter mantra 108 times',
-        'Wear on Thursday morning',
-        'Clean with Ganga jal weekly',
-      ],
-      priority: 'Medium',
-      color: '#f59e0b',
-    },
-    {
-      id: 6,
-      category: 'ritual',
-      title: 'Hanuman Chalisa',
-      planet: 'Mars',
-      description: 'Recite Hanuman Chalisa daily for strength and courage.',
-      instructions: [
-        'Recite once daily in morning',
-        'Face east while reciting',
-        'Light a ghee lamp before Lord Hanuman',
-        'Offer red flowers',
-      ],
-      priority: 'Medium',
-      color: '#ef4444',
-    },
-  ];
+  const handleGenerateClick = () => {
+    setShowModal(true);
+  };
 
-  const filteredRemedies = selectedCategory === 'all' 
-    ? remedies 
-    : remedies.filter(r => r.category === selectedCategory);
+  const generateRemedies = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('@astroai_auth_token');
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'High': return '#ef4444';
-      case 'Medium': return '#f59e0b';
-      case 'Low': return '#10b981';
-      default: return '#6b7280';
+      const response = await fetch(
+        `${API_BASE_URL}/api/horoscope/remedies`,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setRemediesData(data.data);
+      } else {
+        Alert.alert('Error', data.message || 'Failed to generate remedies');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'Failed to load remedies');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <LinearGradient colors={['#667eea', '#764ba2']} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Remedies</Text>
-        <Text style={styles.subtitle}>Personalized solutions for you</Text>
-      </View>
+  // Empty State
+  if (!remediesData && !loading) {
+    return (
+      <View style={styles.container}>
+        <Header navigation={navigation} />
+        
+        <BirthDetailsModal
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={generateRemedies}
+          purpose="remedies"
+        />
+        
+        <ScrollView contentContainerStyle={styles.emptyContainer}>
+          <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.emptyHeader}>
+            <Text style={styles.emptyTitle}>Astrological Remedies</Text>
+            <Text style={styles.emptySubtitle}>Personalized solutions for harmony</Text>
+          </LinearGradient>
 
-      {/* Category Filter */}
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryScroll}
-        contentContainerStyle={styles.categoryContainer}
-      >
-        {categories.map((cat) => (
-          <TouchableOpacity
-            key={cat.id}
-            style={[
-              styles.categoryButton,
-              selectedCategory === cat.id && styles.categoryButtonActive,
-            ]}
-            onPress={() => setSelectedCategory(cat.id)}
-          >
-            <Ionicons 
-              name={cat.icon} 
-              size={20} 
-              color={selectedCategory === cat.id ? '#fff' : '#667eea'} 
-            />
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === cat.id && styles.categoryTextActive,
-              ]}
-            >
-              {cat.label}
+          <View style={styles.emptyContent}>
+            <MaterialCommunityIcons name="meditation" size={80} color="#6C3FB5" />
+            <Text style={styles.emptyText}>
+              Astrological remedies are time-tested Vedic solutions designed to strengthen beneficial planetary influences and mitigate challenging ones in your birth chart. These include gemstone recommendations, mantras, fasting days, charitable acts, yantras, and lifestyle adjustments tailored to your unique planetary positions. Remedies help balance cosmic energies, remove obstacles, attract positive opportunities, and accelerate spiritual growth. They work by aligning your actions with favorable planetary vibrations, enhancing overall well-being across health, wealth, relationships, and career.
             </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            <Button 
+              mode="contained" 
+              onPress={handleGenerateClick}
+              style={styles.generateButton}
+              icon="star"
+            >
+              Generate Remedies
+            </Button>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 
-      {/* Remedies List */}
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
-        {filteredRemedies.map((remedy) => (
-          <View key={remedy.id} style={styles.card}>
+  // Loading State
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Header navigation={navigation} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#6C3FB5" />
+          <Text style={styles.loadingText}>Generating your personalized remedies...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Main Content
+  return (
+    <View style={styles.container}>
+      <Header navigation={navigation} />
+      
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.header}>
+          <MaterialCommunityIcons name="meditation" size={50} color="#fff" />
+          <Text style={styles.title}>Astrological Remedies</Text>
+          <Text style={styles.subtitle}>Personalized solutions for balance</Text>
+        </LinearGradient>
+
+        {/* Gemstone Recommendations */}
+        <Card style={styles.card}>
+          <Card.Content>
             <View style={styles.cardHeader}>
-              <View style={[styles.iconBadge, { backgroundColor: remedy.color + '20' }]}>
-                <Ionicons name="star" size={24} color={remedy.color} />
+              <MaterialCommunityIcons name="diamond-stone" size={28} color="#E91E63" />
+              <Text style={styles.cardTitle}>Gemstone Recommendations</Text>
+            </View>
+            {(remediesData?.gemstones || [
+              { name: 'Ruby', planet: 'Sun', benefit: 'Enhances confidence, vitality, and leadership', weight: '5-7 carats', metal: 'Gold', finger: 'Ring finger', day: 'Sunday' },
+              { name: 'Pearl', planet: 'Moon', benefit: 'Calms mind, improves emotional balance', weight: '4-6 carats', metal: 'Silver', finger: 'Little finger', day: 'Monday' },
+            ]).map((gem, index) => (
+              <View key={index} style={styles.gemstoneCard}>
+                <View style={styles.gemstoneHeader}>
+                  <View>
+                    <Text style={styles.gemstoneName}>{gem.name}</Text>
+                    <Text style={styles.gemstonePlanet}>For {gem.planet}</Text>
+                  </View>
+                  <Chip style={styles.gemstoneChip}>{gem.weight}</Chip>
+                </View>
+                <Text style={styles.gemstoneBenefit}>✨ {gem.benefit}</Text>
+                <View style={styles.gemstoneDetails}>
+                  <Text style={styles.gemstoneDetail}>Metal: {gem.metal}</Text>
+                  <Text style={styles.gemstoneDetail}>Finger: {gem.finger}</Text>
+                  <Text style={styles.gemstoneDetail}>Wear on: {gem.day}</Text>
+                </View>
               </View>
-              <View style={styles.headerContent}>
-                <Text style={styles.cardTitle}>{remedy.title}</Text>
-                <View style={styles.metaRow}>
-                  <Text style={styles.planetText}>For: {remedy.planet}</Text>
-                  <View style={[styles.priorityBadge, { backgroundColor: getPriorityColor(remedy.priority) + '20' }]}>
-                    <Text style={[styles.priorityText, { color: getPriorityColor(remedy.priority) }]}>
-                      {remedy.priority}
-                    </Text>
+            ))}
+            <Text style={styles.note}>
+              ⚠️ Consult an expert astrologer before wearing gemstones
+            </Text>
+          </Card.Content>
+        </Card>
+
+        {/* Mantras */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="music-note" size={28} color="#FF9800" />
+              <Text style={styles.cardTitle}>Powerful Mantras</Text>
+            </View>
+            {(remediesData?.mantras || [
+              { planet: 'Sun', mantra: 'Om Hraam Hreem Hraum Sah Suryaya Namah', count: '7000 times in 40 days', benefit: 'Strengthens Sun, improves health and authority' },
+              { planet: 'Moon', mantra: 'Om Shram Shreem Shraum Sah Chandraya Namah', count: '11000 times in 40 days', benefit: 'Calms mind, enhances emotional stability' },
+            ]).map((mantra, index) => (
+              <View key={index} style={styles.mantraCard}>
+                <View style={styles.mantraHeader}>
+                  <Text style={styles.mantraPlanet}>{mantra.planet} Mantra</Text>
+                </View>
+                <Text style={styles.mantraText}>{mantra.mantra}</Text>
+                <View style={styles.mantraDetails}>
+                  <MaterialCommunityIcons name="counter" size={16} color="#7F8C8D" />
+                  <Text style={styles.mantraCount}>{mantra.count}</Text>
+                </View>
+                <Text style={styles.mantraBenefit}>🌟 {mantra.benefit}</Text>
+              </View>
+            ))}
+          </Card.Content>
+        </Card>
+
+        {/* Fasting Days */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="weather-night" size={28} color="#9C27B0" />
+              <Text style={styles.cardTitle}>Recommended Fasts</Text>
+            </View>
+            {(remediesData?.fasts || [
+              { day: 'Sunday', planet: 'Sun', benefit: 'Boosts vitality and success', food: 'Wheat, jaggery, red foods' },
+              { day: 'Monday', planet: 'Moon', benefit: 'Mental peace and emotional balance', food: 'White rice, milk, white foods' },
+              { day: 'Saturday', planet: 'Saturn', benefit: 'Reduces obstacles and delays', food: 'Sesame, black gram, simple meals' },
+            ]).map((fast, index) => (
+              <View key={index} style={styles.fastCard}>
+                <View style={styles.fastHeader}>
+                  <View>
+                    <Text style={styles.fastDay}>{fast.day}</Text>
+                    <Text style={styles.fastPlanet}>For {fast.planet}</Text>
                   </View>
                 </View>
+                <Text style={styles.fastBenefit}>🙏 {fast.benefit}</Text>
+                <Text style={styles.fastFood}>Food: {fast.food}</Text>
               </View>
+            ))}
+          </Card.Content>
+        </Card>
+
+        {/* Charity & Donations */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="hand-heart" size={28} color="#4CAF50" />
+              <Text style={styles.cardTitle}>Charitable Acts</Text>
             </View>
-
-            <Text style={styles.description}>{remedy.description}</Text>
-
-            <View style={styles.instructionsSection}>
-              <Text style={styles.instructionsTitle}>How to follow:</Text>
-              {remedy.instructions.map((instruction, index) => (
-                <View key={index} style={styles.instructionItem}>
-                  <View style={[styles.bullet, { backgroundColor: remedy.color }]} />
-                  <Text style={styles.instructionText}>{instruction}</Text>
+            {(remediesData?.charity || [
+              { planet: 'Sun', items: 'Red clothes, wheat, jaggery, copper', day: 'Sunday', benefit: 'Strengthens authority and health' },
+              { planet: 'Saturn', items: 'Black clothes, iron, oil, footwear', day: 'Saturday', benefit: 'Removes obstacles and karmic debts' },
+              { planet: 'Jupiter', items: 'Yellow clothes, books, turmeric, gold', day: 'Thursday', benefit: 'Attracts wealth and wisdom' },
+            ]).map((charity, index) => (
+              <View key={index} style={styles.charityCard}>
+                <View style={styles.charityHeader}>
+                  <Text style={styles.charityPlanet}>For {charity.planet}</Text>
+                  <Chip style={styles.charityChip}>{charity.day}</Chip>
                 </View>
-              ))}
+                <Text style={styles.charityItems}>Donate: {charity.items}</Text>
+                <Text style={styles.charityBenefit}>💫 {charity.benefit}</Text>
+              </View>
+            ))}
+            <Text style={styles.note}>
+              💝 Donate to the needy with pure intentions
+            </Text>
+          </Card.Content>
+        </Card>
+
+        {/* Yantra Recommendations */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="grid" size={28} color="#2196F3" />
+              <Text style={styles.cardTitle}>Yantras for Protection</Text>
             </View>
+            {(remediesData?.yantras || [
+              { name: 'Sri Yantra', benefit: 'Prosperity, abundance, divine blessings', placement: 'Worship room or office', material: 'Copper or Gold' },
+              { name: 'Navgraha Yantra', benefit: 'Balances all planetary energies', placement: 'Main entrance or worship room', material: 'Copper' },
+            ]).map((yantra, index) => (
+              <View key={index} style={styles.yantraCard}>
+                <Text style={styles.yantraName}>{yantra.name}</Text>
+                <Text style={styles.yantraBenefit}>🔮 {yantra.benefit}</Text>
+                <View style={styles.yantraDetails}>
+                  <Text style={styles.yantraDetail}>Material: {yantra.material}</Text>
+                  <Text style={styles.yantraDetail}>Place: {yantra.placement}</Text>
+                </View>
+              </View>
+            ))}
+          </Card.Content>
+        </Card>
 
-            <TouchableOpacity style={[styles.actionButton, { backgroundColor: remedy.color }]}>
-              <Text style={styles.actionButtonText}>Set Reminder</Text>
-              <Ionicons name="notifications" size={16} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        ))}
+        {/* Lifestyle Adjustments */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="yoga" size={28} color="#00BCD4" />
+              <Text style={styles.cardTitle}>Lifestyle Tips</Text>
+            </View>
+            <List.Section>
+              {(remediesData?.lifestyle || [
+                'Wake up early during Brahma Muhurta (4-6 AM) for meditation',
+                'Practice Surya Namaskar daily for Sun strength',
+                'Offer water to Sun every morning facing east',
+                'Respect elders and teachers for Jupiter blessings',
+                'Feed cows and crows regularly for ancestral peace',
+                'Plant trees and care for plants for environmental harmony',
+                'Practice gratitude and kindness daily',
+              ]).map((tip, index) => (
+                <List.Item
+                  key={index}
+                  title={tip}
+                  titleNumberOfLines={3}
+                  left={props => <List.Icon {...props} icon="check-circle" color="#4CAF50" />}
+                  style={styles.lifestyleItem}
+                />
+              ))}
+            </List.Section>
+          </Card.Content>
+        </Card>
 
-        <View style={styles.disclaimer}>
-          <Ionicons name="information-circle" size={20} color="#e0e7ff" />
-          <Text style={styles.disclaimerText}>
-            These remedies are suggestions based on Vedic astrology. Consult an expert astrologer before implementing any remedy.
-          </Text>
-        </View>
+        <Button 
+          mode="outlined" 
+          onPress={handleGenerateClick}
+          style={styles.regenerateButton}
+          icon="refresh"
+        >
+          Regenerate Remedies
+        </Button>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  
+  // Empty State
+  emptyContainer: { flexGrow: 1 },
+  emptyHeader: { padding: 30, alignItems: 'center' },
+  emptyTitle: { fontSize: 28, fontWeight: 'bold', color: '#fff' },
+  emptySubtitle: { fontSize: 16, color: '#fff', marginTop: 5 },
+  emptyContent: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 40 
   },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#e0e7ff',
-  },
-  categoryScroll: {
-    maxHeight: 60,
-  },
-  categoryContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-  },
-  categoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  categoryButtonActive: {
-    backgroundColor: '#667eea',
-  },
-  categoryText: {
-    marginLeft: 6,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#667eea',
-  },
-  categoryTextActive: {
-    color: '#fff',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 20,
-    marginTop: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  iconBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  headerContent: {
-    flex: 1,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 4,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  planetText: {
-    fontSize: 13,
-    color: '#6b7280',
-  },
-  priorityBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  priorityText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  description: {
-    fontSize: 15,
-    color: '#4b5563',
-    lineHeight: 22,
-    marginBottom: 16,
-  },
-  instructionsSection: {
-    marginBottom: 16,
-  },
-  instructionsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 10,
-  },
-  instructionItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  bullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginTop: 7,
-    marginRight: 10,
-  },
-  instructionText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#6b7280',
-    lineHeight: 20,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  actionButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
-    marginRight: 6,
-  },
-  disclaimer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 16,
-    marginHorizontal: 20,
+  emptyText: { 
+    fontSize: 16, 
+    color: '#7F8C8D', 
+    textAlign: 'center', 
     marginVertical: 20,
-    borderRadius: 12,
+    lineHeight: 24 
   },
-  disclaimerText: {
-    flex: 1,
-    fontSize: 13,
-    color: '#e0e7ff',
-    marginLeft: 10,
-    lineHeight: 18,
+  generateButton: { 
+    marginTop: 20, 
+    paddingHorizontal: 30 
+  },
+
+  // Loading State
+  loadingContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  loadingText: { 
+    marginTop: 16, 
+    fontSize: 16, 
+    color: '#7F8C8D' 
+  },
+
+  // Main Content
+  header: { padding: 30, alignItems: 'center' },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#fff', marginTop: 10 },
+  subtitle: { fontSize: 16, color: '#fff', marginTop: 5 },
+  card: { margin: 15 },
+  cardHeader: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 15,
+    gap: 10 
+  },
+  cardTitle: { fontSize: 18, fontWeight: 'bold', flex: 1 },
+  note: {
+    fontSize: 12,
+    color: '#7F8C8D',
+    fontStyle: 'italic',
+    marginTop: 10,
+    padding: 8,
+    backgroundColor: '#FFF3E0',
+    borderRadius: 4
+  },
+
+  // Gemstone Card
+  gemstoneCard: {
+    backgroundColor: '#FFF3E0',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 12
+  },
+  gemstoneHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+  gemstoneName: { fontSize: 18, fontWeight: 'bold', color: '#E91E63' },
+  gemstonePlanet: { fontSize: 13, color: '#7F8C8D', marginTop: 2 },
+  gemstoneChip: { backgroundColor: '#FCE4EC' },
+  gemstoneBenefit: { 
+    fontSize: 14, 
+    color: '#2C3E50', 
+    marginBottom: 10,
+    lineHeight: 20 
+  },
+  gemstoneDetails: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12
+  },
+  gemstoneDetail: { fontSize: 12, color: '#7F8C8D' },
+
+  // Mantra Card
+  mantraCard: {
+    backgroundColor: '#FFF3E0',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 12
+  },
+  mantraHeader: { marginBottom: 8 },
+  mantraPlanet: { fontSize: 16, fontWeight: 'bold', color: '#FF9800' },
+  mantraText: {
+    fontSize: 15,
+    color: '#2C3E50',
+    fontStyle: 'italic',
+    marginBottom: 8,
+    lineHeight: 22
+  },
+  mantraDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 8
+  },
+  mantraCount: { fontSize: 13, color: '#7F8C8D' },
+  mantraBenefit: { fontSize: 13, color: '#34495E', lineHeight: 19 },
+
+  // Fast Card
+  fastCard: {
+    backgroundColor: '#F3E5F5',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 12
+  },
+  fastHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8
+  },
+  fastDay: { fontSize: 16, fontWeight: 'bold', color: '#9C27B0' },
+  fastPlanet: { fontSize: 13, color: '#7F8C8D', marginTop: 2 },
+  fastBenefit: { fontSize: 14, color: '#2C3E50', marginBottom: 6 },
+  fastFood: { fontSize: 13, color: '#7F8C8D', fontStyle: 'italic' },
+
+  // Charity Card
+  charityCard: {
+    backgroundColor: '#E8F5E9',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 12
+  },
+  charityHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+  charityPlanet: { fontSize: 16, fontWeight: 'bold', color: '#4CAF50' },
+  charityChip: { backgroundColor: '#C8E6C9' },
+  charityItems: { 
+    fontSize: 14, 
+    color: '#2C3E50', 
+    marginBottom: 6,
+    fontWeight: '500' 
+  },
+  charityBenefit: { fontSize: 13, color: '#34495E' },
+
+  // Yantra Card
+  yantraCard: {
+    backgroundColor: '#E3F2FD',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 12
+  },
+  yantraName: { fontSize: 16, fontWeight: 'bold', color: '#2196F3', marginBottom: 6 },
+  yantraBenefit: { fontSize: 14, color: '#2C3E50', marginBottom: 8 },
+  yantraDetails: { flexDirection: 'row', gap: 15 },
+  yantraDetail: { fontSize: 12, color: '#7F8C8D' },
+
+  // Lifestyle
+  lifestyleItem: { paddingVertical: 4 },
+
+  regenerateButton: { 
+    margin: 15,
+    marginBottom: 30 
   },
 });
-
-export default RemediesScreen;

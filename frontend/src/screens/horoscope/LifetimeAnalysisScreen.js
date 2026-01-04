@@ -1,227 +1,328 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+// frontend/src/screens/horoscope/LifetimeAnalysisScreen.js
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, ActivityIndicator, Button } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '../../components/common/Header';
+import BirthDetailsModal from '../../components/common/BirthDetailsModal';
 
-const LifetimeAnalysisScreen = () => {
-  const lifeAreas = [
-    {
-      id: 1,
-      title: 'Career & Profession',
-      icon: 'briefcase',
-      score: 85,
-      description: 'Strong career growth potential with leadership opportunities after age 35.',
-      keyPeriods: ['2025-2028: Major promotions', '2030-2032: Business opportunities'],
-      color: '#667eea',
-    },
-    {
-      id: 2,
-      title: 'Relationships & Marriage',
-      icon: 'heart',
-      score: 72,
-      description: 'Harmonious relationships with slight delays in marriage timing.',
-      keyPeriods: ['2026-2027: Marriage period', '2029+: Strong family bonds'],
-      color: '#f093fb',
-    },
-    {
-      id: 3,
-      title: 'Finance & Wealth',
-      icon: 'cash',
-      score: 78,
-      description: 'Steady wealth accumulation with multiple income sources.',
-      keyPeriods: ['2025-2030: Property gains', '2032+: Investment returns'],
-      color: '#4facfe',
-    },
-    {
-      id: 4,
-      title: 'Health & Wellness',
-      icon: 'fitness',
-      score: 68,
-      description: 'Good overall health with attention needed for stress management.',
-      keyPeriods: ['2025-2027: Focus on fitness', '2030+: Preventive care'],
-      color: '#43e97b',
-    },
-  ];
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
-  const getScoreColor = (score) => {
-    if (score >= 80) return '#10b981';
-    if (score >= 60) return '#f59e0b';
-    return '#ef4444';
+export default function LifetimeAnalysisScreen({ navigation }) {
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [lifetimeData, setLifetimeData] = useState(null);
+
+  const handleGenerateClick = () => {
+    setShowModal(true);
   };
 
-  return (
-    <LinearGradient colors={['#667eea', '#764ba2']} style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Lifetime Analysis</Text>
-          <Text style={styles.subtitle}>Your life journey predictions</Text>
-        </View>
+  const generateAnalysis = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('@astroai_auth_token');
 
-        {lifeAreas.map((area) => (
-          <View key={area.id} style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View style={styles.iconContainer}>
-                <Ionicons name={area.icon} size={32} color={area.color} />
-              </View>
-              <View style={styles.headerText}>
-                <Text style={styles.cardTitle}>{area.title}</Text>
-                <View style={styles.scoreContainer}>
-                  <Text style={[styles.scoreText, { color: getScoreColor(area.score) }]}>
-                    {area.score}%
-                  </Text>
-                  <Text style={styles.scoreLabelText}>Favorable</Text>
-                </View>
-              </View>
-            </View>
+      const response = await fetch(
+        `${API_BASE_URL}/api/horoscope/lifetime`,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
 
-            <Text style={styles.description}>{area.description}</Text>
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setLifetimeData(data.data);
+      } else {
+        Alert.alert('Error', data.message || 'Failed to generate analysis');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'Failed to load lifetime analysis');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            <View style={styles.periodsSection}>
-              <Text style={styles.periodsTitle}>Key Life Periods:</Text>
-              {area.keyPeriods.map((period, index) => (
-                <View key={index} style={styles.periodItem}>
-                  <Ionicons name="arrow-forward" size={16} color={area.color} />
-                  <Text style={styles.periodText}>{period}</Text>
-                </View>
-              ))}
-            </View>
+  // Empty State
+  if (!lifetimeData && !loading) {
+    return (
+      <View style={styles.container}>
+        <Header navigation={navigation} />
+        
+        <BirthDetailsModal
+          visible={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={generateAnalysis}
+          purpose="analysis"
+        />
+        
+        <ScrollView contentContainerStyle={styles.emptyContainer}>
+          <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.emptyHeader}>
+            <Text style={styles.emptyTitle}>Lifetime Analysis</Text>
+            <Text style={styles.emptySubtitle}>Your complete life journey</Text>
+          </LinearGradient>
 
-            {/* Progress bar */}
-            <View style={styles.progressBarContainer}>
-              <View style={[styles.progressBar, { width: `${area.score}%`, backgroundColor: area.color }]} />
-            </View>
+          <View style={styles.emptyContent}>
+            <MaterialCommunityIcons name="infinity" size={80} color="#6C3FB5" />
+            <Text style={styles.emptyText}>
+              Lifetime analysis: A lifetime analysis provides a comprehensive astrological overview of your entire life journey from birth to the present and beyond. It examines your natal chart deeply to reveal your life purpose, karmic patterns, soul lessons, and destined path. The analysis covers all major life phases including childhood influences, career trajectory, relationship patterns, spiritual growth, and dharma. It includes detailed interpretations of planetary periods (dashas), major transits, and their impact on your life's timeline, offering insights into past challenges, current opportunities, and future potentials.
+            </Text>
+            <Button 
+              mode="contained" 
+              onPress={handleGenerateClick}
+              style={styles.generateButton}
+              icon="star"
+            >
+              Generate Now
+            </Button>
           </View>
-        ))}
+        </ScrollView>
+      </View>
+    );
+  }
 
-        <View style={styles.footer}>
-          <Ionicons name="information-circle" size={20} color="#fff" />
-          <Text style={styles.footerText}>
-            These predictions are based on your birth chart analysis and planetary periods.
-          </Text>
+  // Loading State
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Header navigation={navigation} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#6C3FB5" />
+          <Text style={styles.loadingText}>Generating your lifetime analysis...</Text>
+          <Text style={styles.loadingSubtext}>This may take a moment...</Text>
         </View>
+      </View>
+    );
+  }
+
+  // Main Content
+  return (
+    <View style={styles.container}>
+      <Header navigation={navigation} />
+      
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <LinearGradient colors={['#6C3FB5', '#4A90E2']} style={styles.header}>
+          <MaterialCommunityIcons name="infinity" size={60} color="#fff" />
+          <Text style={styles.title}>Lifetime Analysis</Text>
+          <Text style={styles.subtitle}>Your complete life journey</Text>
+        </LinearGradient>
+
+        {/* Life Purpose */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="target" size={28} color="#6C3FB5" />
+              <Text style={styles.cardTitle}>Life Purpose & Dharma</Text>
+            </View>
+            <Text style={styles.cardText}>
+              {lifetimeData?.life_purpose || 
+              'Your soul\'s journey is to become a leader and guide for others. Your dharma involves teaching, mentoring, and sharing wisdom gained through life experiences. You are meant to inspire transformation in people\'s lives through your authentic expression and spiritual insights.'}
+            </Text>
+          </Card.Content>
+        </Card>
+
+        {/* Karmic Patterns */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="sync" size={28} color="#E91E63" />
+              <Text style={styles.cardTitle}>Karmic Patterns</Text>
+            </View>
+            <Text style={styles.cardText}>
+              {lifetimeData?.karmic_patterns || 
+              'Past life karma influences your current relationships and material pursuits. Focus on balancing giving and receiving, learning boundaries, and developing self-worth independent of external validation. Your soul is working through lessons of trust and surrender.'}
+            </Text>
+          </Card.Content>
+        </Card>
+
+        {/* Life Phases */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="timeline" size={28} color="#FF9800" />
+              <Text style={styles.cardTitle}>Major Life Phases</Text>
+            </View>
+            
+            <View style={styles.phaseContainer}>
+              <Text style={styles.phaseTitle}>Ages 0-28: Foundation Phase</Text>
+              <Text style={styles.phaseText}>
+                {lifetimeData?.phase_1 || 
+                'Early years shaped by Saturn and Jupiter. Learning fundamental life lessons, building character, and discovering talents. Focus on education and personal development.'}
+              </Text>
+            </View>
+
+            <View style={styles.phaseContainer}>
+              <Text style={styles.phaseTitle}>Ages 29-42: Growth Phase</Text>
+              <Text style={styles.phaseText}>
+                {lifetimeData?.phase_2 || 
+                'Period of expansion and achievement. Career advancement, relationship commitments, and material success. Saturn return brings maturity and life redirection.'}
+              </Text>
+            </View>
+
+            <View style={styles.phaseContainer}>
+              <Text style={styles.phaseTitle}>Ages 43-60: Mastery Phase</Text>
+              <Text style={styles.phaseText}>
+                {lifetimeData?.phase_3 || 
+                'Time of wisdom and leadership. Sharing knowledge with others, mentoring, and contributing to society. Peak of professional and personal influence.'}
+              </Text>
+            </View>
+
+            <View style={styles.phaseContainer}>
+              <Text style={styles.phaseTitle}>Ages 60+: Wisdom Phase</Text>
+              <Text style={styles.phaseText}>
+                {lifetimeData?.phase_4 || 
+                'Spiritual deepening and reflection. Legacy building, simplification, and preparing for the next journey. Focus shifts to inner peace and transcendence.'}
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
+
+        {/* Soul Lessons */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="school" size={28} color="#9C27B0" />
+              <Text style={styles.cardTitle}>Key Soul Lessons</Text>
+            </View>
+            <Text style={styles.lessonItem}>• Developing emotional resilience and inner strength</Text>
+            <Text style={styles.lessonItem}>• Learning to trust divine timing and surrender control</Text>
+            <Text style={styles.lessonItem}>• Balancing material success with spiritual growth</Text>
+            <Text style={styles.lessonItem}>• Cultivating authentic relationships and vulnerability</Text>
+            <Text style={styles.lessonItem}>• Finding purpose beyond personal achievement</Text>
+          </Card.Content>
+        </Card>
+
+        {/* Dasha Periods */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="chart-timeline-variant" size={28} color="#4CAF50" />
+              <Text style={styles.cardTitle}>Planetary Periods (Dashas)</Text>
+            </View>
+            <Text style={styles.cardText}>
+              {lifetimeData?.dasha_overview || 
+              'Your current life is influenced by a sequence of planetary periods. Each planet rules different aspects of your life for specific durations, creating natural cycles of growth, challenge, and transformation. Understanding these periods helps you align with cosmic timing.'}
+            </Text>
+          </Card.Content>
+        </Card>
+
+        {/* Future Potential */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons name="crystal-ball" size={28} color="#2196F3" />
+              <Text style={styles.cardTitle}>Future Potential</Text>
+            </View>
+            <Text style={styles.cardText}>
+              {lifetimeData?.future_potential || 
+              'Your chart shows immense potential for spiritual leadership and creative expression. Upcoming Jupiter transits will bring opportunities for expansion in teaching, writing, or consulting. Trust your intuition and embrace your authentic voice. The universe supports your highest purpose.'}
+            </Text>
+          </Card.Content>
+        </Card>
+
+        <Button 
+          mode="outlined" 
+          onPress={handleGenerateClick}
+          style={styles.regenerateButton}
+          icon="refresh"
+        >
+          Update Birth Details
+        </Button>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  
+  // Empty State
+  emptyContainer: { flexGrow: 1 },
+  emptyHeader: { padding: 30, alignItems: 'center' },
+  emptyTitle: { fontSize: 28, fontWeight: 'bold', color: '#fff' },
+  emptySubtitle: { fontSize: 16, color: '#fff', marginTop: 5 },
+  emptyContent: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 40 
   },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+  emptyText: { 
+    fontSize: 16, 
+    color: '#7F8C8D', 
+    textAlign: 'center', 
+    marginVertical: 20,
+    lineHeight: 24 
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 8,
+  generateButton: { 
+    marginTop: 20, 
+    paddingHorizontal: 30 
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#e0e7ff',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  iconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#f3f4f6',
-    justifyContent: 'center',
+
+  // Loading State
+  loadingContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
     alignItems: 'center',
-    marginRight: 16,
+    padding: 40 
   },
-  headerText: {
-    flex: 1,
-    justifyContent: 'center',
+  loadingText: { 
+    marginTop: 16, 
+    fontSize: 16, 
+    color: '#7F8C8D' 
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 4,
-  },
-  scoreContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  scoreText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginRight: 8,
-  },
-  scoreLabelText: {
+  loadingSubtext: {
+    marginTop: 8,
     fontSize: 14,
-    color: '#6b7280',
+    color: '#BDC3C7',
+    fontStyle: 'italic'
   },
-  description: {
-    fontSize: 15,
-    color: '#4b5563',
+
+  // Main Content
+  header: { padding: 40, alignItems: 'center' },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#fff', marginTop: 15 },
+  subtitle: { fontSize: 16, color: '#fff', marginTop: 5 },
+  card: { margin: 15, elevation: 2 },
+  cardHeader: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 15,
+    gap: 10 
+  },
+  cardTitle: { 
+    fontSize: 20, 
+    fontWeight: 'bold',
+    flex: 1 
+  },
+  cardText: { 
+    fontSize: 16, 
+    lineHeight: 24,
+    color: '#2C3E50' 
+  },
+  phaseContainer: { 
+    marginBottom: 20,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0'
+  },
+  phaseTitle: { 
+    fontSize: 16, 
+    fontWeight: 'bold',
+    color: '#6C3FB5',
+    marginBottom: 8 
+  },
+  phaseText: { 
+    fontSize: 14, 
     lineHeight: 22,
-    marginBottom: 16,
+    color: '#34495E' 
   },
-  periodsSection: {
-    marginBottom: 16,
+  lessonItem: { 
+    fontSize: 15, 
+    lineHeight: 26,
+    color: '#2C3E50' 
   },
-  periodsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 8,
-  },
-  periodItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  periodText: {
-    fontSize: 14,
-    color: '#6b7280',
-    marginLeft: 8,
-  },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: '#e5e7eb',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  footer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 16,
-    marginHorizontal: 20,
-    marginBottom: 30,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  footerText: {
-    flex: 1,
-    fontSize: 13,
-    color: '#fff',
-    marginLeft: 12,
-    lineHeight: 18,
+  regenerateButton: { 
+    margin: 15,
+    marginBottom: 30 
   },
 });
-
-export default LifetimeAnalysisScreen;

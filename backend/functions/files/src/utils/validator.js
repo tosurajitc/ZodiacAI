@@ -116,8 +116,9 @@ const birthDetailsSchema = Joi.object({
         'number.min': 'Longitude must be between -180 and 180',
         'number.max': 'Longitude must be between -180 and 180',
       }),
-    timezone: Joi.string()
+    timezone: Joi.number()
       .optional()
+      .default(5.5)
       .messages({}),
 });
 

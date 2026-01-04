@@ -99,6 +99,12 @@ const startServer = async () => {
     logger.info('📄 Connecting to PostgreSQL database...');
     await connectDatabase();
     
+    // ✅ SYNC DATABASE MODELS (CREATE TABLES)
+    const { sequelize } = require('./src/models');
+    logger.info('🔄 Syncing database models...');
+    await sequelize.sync({ alter: false });
+    logger.info('✅ Database tables synchronized');
+    
     // Connect to Redis cache
     logger.info('📄 Connecting to Redis cache...');
     await connectRedis();
@@ -111,12 +117,14 @@ const startServer = async () => {
     const chatRoutes = require('./src/routes/chat');
     const feedbackRoutes = require('./src/routes/feedback');
 
+
     // Register API Routes
     app.use('/api/auth', authRoutes);
     app.use('/api/kundli', kundliRoutes);
     app.use('/api/horoscope', horoscopeRoutes);
     app.use('/api/chat', chatRoutes);
     app.use('/api/feedback', feedbackRoutes);
+
 
     // 404 handler for undefined routes
     app.use('*', (req, res) => {

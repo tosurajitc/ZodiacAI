@@ -5,27 +5,59 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signInWithGoogle, signInWithFacebook } from '../../services/firebase/auth';
 
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
+
+  const syncWithBackend = async (firebaseUser, provider) => {
+    try {
+      const idToken = await firebaseUser.getIdToken();
+      
+      const endpoint = provider === 'google' ? '/api/auth/google' : '/api/auth/facebook';
+      
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Backend sync failed');
+      }
+
+      await AsyncStorage.setItem('@astroai_user_data', JSON.stringify(data.user));
+      await AsyncStorage.setItem('@astroai_auth_token', data.token);
+
+      console.log('User synced with backend:', data.user);
+      
+      return { success: true, user: data.user, token: data.token };
+    } catch (error) {
+      console.error('Backend sync error:', error);
+      throw error;
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
       const result = await signInWithGoogle();
+      
       if (!result.success) {
         Alert.alert('Login Failed', result.error);
         return;
       }
+
+      await syncWithBackend(result.user, 'google');
       
-      // ✅ Store backend user data and token
-      await AsyncStorage.setItem('@astroai_user_data', JSON.stringify(result.user));
-      await AsyncStorage.setItem('@astroai_auth_token', result.token);
-      
-      console.log('User data stored:', result.user);
-      // Navigation will happen automatically via AppNavigator's useEffect
+      console.log('Google login complete');
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'Something went wrong');
+      Alert.alert('Error', 'Failed to complete login. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -35,19 +67,18 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const result = await signInWithFacebook();
+      
       if (!result.success) {
         Alert.alert('Login Failed', result.error);
         return;
       }
+
+      await syncWithBackend(result.user, 'facebook');
       
-      // ✅ Store backend user data and token
-      await AsyncStorage.setItem('@astroai_user_data', JSON.stringify(result.user));
-      await AsyncStorage.setItem('@astroai_auth_token', result.token);
-      
-      console.log('User data stored:', result.user);
+      console.log('Facebook login complete');
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'Something went wrong');
+      Alert.alert('Error', 'Failed to complete login. Please try again.');
     } finally {
       setLoading(false);
     }

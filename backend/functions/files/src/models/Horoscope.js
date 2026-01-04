@@ -4,12 +4,12 @@
 module.exports = (sequelize, DataTypes) => {
   const Horoscope = sequelize.define('Horoscope', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
+      defaultValue: () => require('crypto').randomUUID(),
       primaryKey: true,
     },
     user_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'users',

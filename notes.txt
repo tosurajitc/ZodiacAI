@@ -20,12 +20,14 @@ PostGreSQL PW:  'watsonx_secure_2024'
 Firebase Project: zodiacai-4d885
 
 
-  API_BASE_URL: __DEV__ 
-    ? 'http://localhost:5000/api' 
-    : 'https://api.astroai.com/api', // Change for production
+DROP TABLE IF EXISTS chat_messages CASCADE;
+DROP TABLE IF EXISTS chat_sessions CASCADE;
+DROP TABLE IF EXISTS feedback CASCADE;
+DROP TABLE IF EXISTS horoscopes CASCADE;
+DROP TABLE IF EXISTS birth_details CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
-  PYTHON_API_URL: __DEV__
-    ? 'http://localhost:8000/api'
+ALTER TABLE birth_details ADD CONSTRAINT birth_details_user_id_unique UNIQUE (user_id);
 
 git init
 git add .

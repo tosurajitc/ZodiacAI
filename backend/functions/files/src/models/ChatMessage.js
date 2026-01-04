@@ -4,12 +4,12 @@
 module.exports = (sequelize, DataTypes) => {
   const ChatMessage = sequelize.define('ChatMessage', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
+      defaultValue: () => require('crypto').randomUUID(),
       primaryKey: true,
     },
     session_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'chat_sessions',

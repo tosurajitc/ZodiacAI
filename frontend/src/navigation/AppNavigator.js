@@ -16,7 +16,6 @@ import DashboardScreen from '../screens/main/DashboardScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
 
 // Kundli Screens
-import BirthDetailsScreen from '../screens/kundli/BirthDetailsScreen';
 import KundliViewScreen from '../screens/kundli/KundliViewScreen';
 
 // Horoscope Screens
@@ -31,6 +30,21 @@ import ChatScreen from '../screens/chat/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+// Home Stack Navigator (includes Dashboard + Horoscopes + Kundli)
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Dashboard" component={DashboardScreen} />
+      <Stack.Screen name="KundliView" component={KundliViewScreen} />
+      <Stack.Screen name="DailyHoroscope" component={DailyHoroscopeScreen} />
+      <Stack.Screen name="MonthlyHoroscope" component={MonthlyHoroscopeScreen} />
+      <Stack.Screen name="YearlyHoroscope" component={YearlyHoroscopeScreen} />
+      <Stack.Screen name="LifetimeAnalysis" component={LifetimeAnalysisScreen} />
+      <Stack.Screen name="Remedies" component={RemediesScreen} />
+    </Stack.Navigator>
+  );
+}
 
 // Bottom Tab Navigator for Main App
 function MainTabs() {
@@ -53,7 +67,7 @@ function MainTabs() {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Home" component={DashboardScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
@@ -66,7 +80,6 @@ export default function AppNavigator() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored user data on app start
     const loadStoredUser = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('@astroai_user_data');
@@ -85,10 +98,8 @@ export default function AppNavigator() {
 
     loadStoredUser();
 
-    // Listen to Firebase auth state changes
     const unsubscribe = onAuthStateChange(async (firebaseUser) => {
       if (firebaseUser) {
-        // User logged in with Firebase - check for backend data
         try {
           const storedUser = await AsyncStorage.getItem('@astroai_user_data');
           if (storedUser) {
@@ -99,14 +110,12 @@ export default function AppNavigator() {
           console.error('Error checking stored user after Firebase auth:', error);
         }
       } else {
-        // User logged out - clear everything
         console.log('User logged out, clearing data');
         setUser(null);
         await AsyncStorage.multiRemove(['@astroai_user_data', '@astroai_auth_token']);
       }
     });
 
-    // Cleanup subscription
     return () => unsubscribe();
   }, []);
 
@@ -117,20 +126,9 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!user ? (
-        // Auth Stack - Show login if not authenticated
         <Stack.Screen name="Login" component={LoginScreen} />
       ) : (
-        // Main App Stack - Show app if authenticated
-        <>
-          <Stack.Screen name="MainTabs" component={MainTabs} />
-          <Stack.Screen name="BirthDetails" component={BirthDetailsScreen} />
-          <Stack.Screen name="KundliView" component={KundliViewScreen} />
-          <Stack.Screen name="DailyHoroscope" component={DailyHoroscopeScreen} />
-          <Stack.Screen name="MonthlyHoroscope" component={MonthlyHoroscopeScreen} />
-          <Stack.Screen name="YearlyHoroscope" component={YearlyHoroscopeScreen} />
-          <Stack.Screen name="LifetimeAnalysis" component={LifetimeAnalysisScreen} />
-          <Stack.Screen name="Remedies" component={RemediesScreen} />
-        </>
+        <Stack.Screen name="MainTabs" component={MainTabs} />
       )}
     </Stack.Navigator>
   );
